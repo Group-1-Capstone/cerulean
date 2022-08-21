@@ -1,14 +1,14 @@
-//this is the access point for all things database related!
+// this is the access point for all things database related!
 
-const db = require('./db')
+const db = require('./database');
 
-const User = require('./models/User')
+const User = require('./models/User');
 
-//associations could go here!
+// associations go here-  other uses for db (express routes) should be using the models from here after they're associated.
 
 module.exports = {
   db,
   models: {
     User,
   },
-}
+};
