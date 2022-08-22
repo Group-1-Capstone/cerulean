@@ -15,20 +15,19 @@ const init = async () => {
     } else {
       await db.sync();
     }
-    // start listening (and create a 'server' object representing our server) socket server will go here too
-    const server = app.listen(PORT, () =>
-      console.log(`Mixing it up on port ${PORT}`)
-    );
-
-    const socketServer = new io.Server(server);
-    socketServer.on('connection', (socket) => {
-      socket.on('action', (action) => {
-        socket.broadcast.emit('action', action);
-      });
-    });
   } catch (ex) {
     console.log(ex);
   }
 };
-
 init();
+// start listening (and create a 'server' object representing our server) socket server will go here too
+const server = app.listen(PORT, () =>
+  console.log(`Mixing it up on port ${PORT}`)
+);
+const socketServer = new io.Server(server);
+socketServer.on('connection', (socket) => {
+  socket.on('action', (action) => {
+    socket.broadcast.emit('action', action);
+  });
+});
+module.exports = socketServer;
