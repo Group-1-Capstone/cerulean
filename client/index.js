@@ -15,7 +15,7 @@ import App from './App';
 const clientSocket = socket(window.location.origin);
 clientSocket.on('connect', () => {
   console.log('Socket connected to server');
-});
+}); // socket connections in scenes- Main.js in client. Open socket connection this.socket= new Socket.io..... create function.
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
