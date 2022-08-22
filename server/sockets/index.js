@@ -2,10 +2,9 @@ module.exports = (socket) => {
   socket.on('event', (event) => {
     socket.broadcast.emit('event', event);
   });
-  return ()
 };
-//setlisteners set ids put in rooms
-//we need a tear down func
+// setlisteners set ids put in rooms
+// we need a tear down func return func() on line 5 before close
 /*  game logic file server side functions
 when client emits actions send back something to people in that room
 
