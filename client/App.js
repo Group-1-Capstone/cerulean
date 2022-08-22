@@ -1,9 +1,14 @@
+import Game from './src/components/Game';
 import React from 'react';
 // import Navbar from './components/Navbar';
 // import Routes from './Routes';
 
-// we will need to render game inside of App.
-// HELLLO
-const App = () => <div></div>;
-// we need to return <Game/>
+
+
+function App() {
+  return (
+    <Game/>
+  );
+}
+
 export default App;
