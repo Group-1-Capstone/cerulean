@@ -1,17 +1,16 @@
-import Phaser from 'phaser';
-import Main from './Main';
+import Main from './scenes/Main';
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1920,
+  height: 1080,
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 20 },
-    },
+      gravity: { y: 20 }
+    }
   },
-  scene: Main,
-};
+  scene: Main
+}
 
 export default config;
