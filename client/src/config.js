@@ -15,5 +15,5 @@ const config = {
     },
   },
 };
-// ???  const initGame = new Phaser.Game(config);
+
 export default config;
