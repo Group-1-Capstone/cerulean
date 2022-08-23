@@ -1,17 +1,19 @@
+import Phaser, { Core } from 'phaser';
 import Main from './scenes/Main';
 
 const config = {
   type: Phaser.AUTO,
-  width: 1920,
-  height: 1080,
+  width: 800,
+  height: 600,
+  scene: Main,
   physics: {
     default: 'arcade',
     arcade: {
+      debug: true,
       gravity: { y: 20 },
-      enableBody: true
-    }
+      enableBody: true,
+    },
   },
-  scene: Main
-}
-
+};
+// ???  const initGame = new Phaser.Game(config);
 export default config;
