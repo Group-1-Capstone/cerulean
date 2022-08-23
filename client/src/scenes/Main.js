@@ -15,7 +15,6 @@ export default class Main extends Phaser.Scene {
 
   create() {
     this.player = this.physics.add.sprite(100, 300, 'jessie');
-    this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
     this.anims.create({
       key: 'turn',
@@ -24,7 +23,7 @@ export default class Main extends Phaser.Scene {
     });
     this.anims.create({
       key: 'right',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5 }),
+      frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5,}),
       frameRate: 10,
       repeat: -1,
     });
@@ -34,18 +33,36 @@ export default class Main extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
+    this.anims.create({
+      key: 'up',
+      frames: this.anims.generateFrameNumbers('jessie', { start: 0, end: 2 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: 'down',
+      frames: this.anims.generateFrameNumbers('jessie', { start: 6, end: 8 }),
+      frameRate: 10,
+      repeat: -1,
+    });
   }
 
   update() {
     const cursors = this.input.keyboard.createCursorKeys();
     if (cursors.left.isDown) {
-      this.player.setVelocityX(-160);
+      this.player.setVelocity(-160, 0);
       this.player.anims.play('left', true);
     } else if (cursors.right.isDown) {
-      this.player.setVelocityX(160);
+      this.player.setVelocity(160, 0);
       this.player.anims.play('right', true);
+    } else if (cursors.up.isDown) {
+      this.player.setVelocity(0, -160);
+      this.player.anims.play('up', true);
+    } else if (cursors.down.isDown) {
+      this.player.setVelocity(0, 160);
+      this.player.anims.play('down', true);
     } else {
-      this.player.setVelocityX(0);
+      this.player.setVelocity(0, 0);
       this.player.anims.play('turn');
     }
   }
