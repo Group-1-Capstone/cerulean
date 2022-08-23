@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { io } from 'socket.io-client';
+
 export default class Main extends Phaser.Scene {
   constructor() {
     super('main');
@@ -7,18 +9,17 @@ export default class Main extends Phaser.Scene {
   preload() {
     this.load.image('red_ball', 'sprites/red_ball.png');
     this.load.image('red_particle', 'sprites/red.png');
-    
-    //jessie
-    
+
+    // jessie
+
     // this.load.spritesheet("jessie", jessie, {
     //   frameWidth: 47,
     //   frameHeight: 63,
     // });
   }
 
-  create() { 
-
-    //jessie animations
+  create() {
+    // jessie animations
 
     // this.anims.create({
     //   key: "turn",
@@ -37,7 +38,7 @@ export default class Main extends Phaser.Scene {
     //   frameRate: 10,
     //   repeat: -1,
     // });
-    
+
     const particles = this.add.particles('red_particle');
 
     const emitter = particles.createEmitter({
@@ -54,3 +55,9 @@ export default class Main extends Phaser.Scene {
     emitter.startFollow(ball);
   }
 }
+const clientSocket = io(window.location.origin);
+clientSocket.on('connect', () => {
+  console.log('Socket connected to server');
+}); // socket connections in scenes- Main.js in client. Open socket connection this.socket= new Socket.io..... create function.
+/* A new Manager? https://socket.io/docs/v4/client-api/
+ */
