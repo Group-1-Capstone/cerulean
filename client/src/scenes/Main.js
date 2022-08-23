@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
+import { io } from 'socket.io-client';
 
-class Main extends Phaser.Scene {
+export default class Main extends Phaser.Scene {
   constructor() {
     super('main');
   }
@@ -49,4 +50,10 @@ class Main extends Phaser.Scene {
     }
   }
 }
-export default Main;
+
+const clientSocket = io(window.location.origin);
+clientSocket.on('connect', () => {
+  console.log('Socket connected to server');
+}); // socket connections in scenes- Main.js in client. Open socket connection this.socket= new Socket.io..... create function.
+/* A new Manager? https://socket.io/docs/v4/client-api/
+ */
