@@ -7,7 +7,8 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 20 }
+      gravity: { y: 20 },
+      enableBody: true
     }
   },
   scene: Main
