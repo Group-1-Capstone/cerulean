@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from "react"
 import styles from "./Game.module.css"
 import config from "../config"
 import usePhaser from "../hooks/usePhaser"
 import { useFullscreen } from "ahooks"
+import SocketCommands from '../scenes/SocketCommands';
 
 export default function Game() {
-  const { gameContainer } = usePhaser(config)
+  const { game, gameContainer } = usePhaser(config)
   const [isFullscreen, { toggleFullscreen }] = useFullscreen(gameContainer)
   const [score, setScore] = useState(0)
+  
+  // useEffect(() => {
+  //   SocketCommands(game.current);
+  // }, [game]);
 
   return (
     <div className={styles.game}>
