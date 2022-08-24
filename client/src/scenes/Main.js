@@ -2,8 +2,11 @@ import Phaser from 'phaser';
 import { io } from 'socket.io-client';
 
 export default class Main extends Phaser.Scene {
-  constructor() {
-    super('main');
+  constructor(name, { store, socket }) {
+    super(name);
+    // this.store = store,
+    this.socket = socket
+    this.players = {}
   }
 
   preload() {
@@ -14,14 +17,38 @@ export default class Main extends Phaser.Scene {
   }
 
   create() {
-    this.player = this.physics.add.sprite(100, 300, 'jessie');
-    //console.log(this);
-    //console.log(Object.getPrototypeOf(this));
-    
-    // this.addPlayer ? - per Alec
-    // maybe:
-    // clientSocket.on('newPlayer', function(data) {
-    //   Game.addNewPlayer(data.id, data.x, data.y);
+    console.log('store', this.store);
+    const x = 100;
+    const y = 300;
+    this.player = this.physics.add.sprite(x, y, 'jessie');
+    this.socket.emit('newPlayer', {x, y})
+
+    this.socket.on('playerJoined', (data) => {
+      console.log('new player added', data);
+      const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
+      this.players[data.id] = newPlayer;
+    });
+
+    this.socket.on('playerMoved', (data) => {
+      if (!this.players[data.id]) return;
+      console.log('this.players', this.players[data.id]);
+      const playerMoved = this.players[data.id];
+      // const distance = Phaser.Math.Distance(playerMoved.x, playerMoved.y, data.x, data.y);
+      const distance = Math.sqrt((playerMoved.x - data.x) ^ 2 + (playerMoved.y - data.y) ^2);
+      this.add.tween(playerMoved).to(data, distance * 10).start();
+      // this.players[data.id].setPosition(data.x, data.y);
+      // this.players[data.id].setRotation(data.rotation);
+    });
+
+
+    // this.socket.on('allplayers', function (data) {
+    //   for (var i = 0; i < data.length; i++) {
+    //     Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
+    //   }
+    // });
+
+    // this.socket.on('remove', function (id) {
+    //   Game.removePlayer(id);
     // });
 
     this.player.setCollideWorldBounds(true);
@@ -32,7 +59,7 @@ export default class Main extends Phaser.Scene {
     });
     this.anims.create({
       key: 'right',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5,}),
+      frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5 }),
       frameRate: 10,
       repeat: -1,
     });
@@ -57,6 +84,8 @@ export default class Main extends Phaser.Scene {
   }
 
   update() {
+    this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
+    
     const cursors = this.input.keyboard.createCursorKeys();
     if (cursors.left.isDown) {
       this.player.setVelocity(-160, 0);
@@ -81,7 +110,7 @@ export default class Main extends Phaser.Scene {
 
 // // clientSocket.on('connect', () => {
 // //   console.log('Socket connected to server');
-// // }); 
+// // });
 // // socket connections in scenes- Main.js in client. Open socket connection this.socket= new Socket.io..... create function.
 // /* A new Manager? https://socket.io/docs/v4/client-api/
 //  */

@@ -5,6 +5,15 @@ module.exports = (socket) => {
     socket.broadcast.emit('event', event);
   });
 
+  socket.on('newPlayer', (data) => {
+    console.log('new player', data, socket.id)
+    socket.broadcast.emit('playerJoined', { ...data, id: socket.id})
+  })
+
+  socket.on('playerMovement', (data) => {
+    socket.broadcast.emit('playerMoved', {...data, id: socket.id})
+  })
+
   // testing to see this in the browser:
   socket.broadcast.emit('newPlayer', { id: 10, x: 300, y: 400 });
 
@@ -22,7 +31,7 @@ module.exports = (socket) => {
     rooms[roomName].players[socket.id] = {
       name,
       x: Math.floor(Math.random() * 700) + 50,
-      y: Math.floor(Math.random() * 500 + 50),
+      y: Math.floor(Math.random() * 500) + 50,
       playerId: socket.id,
       room: roomName,
     };
