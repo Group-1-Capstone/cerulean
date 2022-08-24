@@ -1,8 +1,7 @@
 const Sequelize = require('sequelize');
-const db = require('../database');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const axios = require('axios');
+const db = require('../database');
 
 const SALT_ROUNDS = 5;
 
