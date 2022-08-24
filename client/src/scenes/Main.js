@@ -15,6 +15,15 @@ export default class Main extends Phaser.Scene {
 
   create() {
     this.player = this.physics.add.sprite(100, 300, 'jessie');
+    //console.log(this);
+    //console.log(Object.getPrototypeOf(this));
+    
+    // this.addPlayer ? - per Alec
+    // maybe:
+    // clientSocket.on('newPlayer', function(data) {
+    //   Game.addNewPlayer(data.id, data.x, data.y);
+    // });
+
     this.player.setCollideWorldBounds(true);
     this.anims.create({
       key: 'turn',
@@ -68,9 +77,28 @@ export default class Main extends Phaser.Scene {
   }
 }
 
-const clientSocket = io(window.location.origin);
-clientSocket.on('connect', () => {
-  console.log('Socket connected to server');
-}); // socket connections in scenes- Main.js in client. Open socket connection this.socket= new Socket.io..... create function.
-/* A new Manager? https://socket.io/docs/v4/client-api/
- */
+// const clientSocket = io(window.location.origin);
+
+// // clientSocket.on('connect', () => {
+// //   console.log('Socket connected to server');
+// // }); 
+// // socket connections in scenes- Main.js in client. Open socket connection this.socket= new Socket.io..... create function.
+// /* A new Manager? https://socket.io/docs/v4/client-api/
+//  */
+
+// clientSocket.on('newplayer',function(data){
+//   Game.addNewPlayer(data.id,data.x,data.y);
+// });
+
+// clientSocket.sendTest = function(){
+//   console.log("test sent");
+//   clientSocket.socket.emit('test');
+// };
+
+// clientSocket.askNewPlayer = function(){
+//   clientSocket.socket.emit('newplayer');
+// };
+
+// clientSocket.sendClick = function(x,y){
+// clientSocket.socket.emit('click',{x:x,y:y});
+// };
