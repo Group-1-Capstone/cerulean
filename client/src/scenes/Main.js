@@ -5,10 +5,8 @@ export default class Main extends Phaser.Scene {
   constructor(name, { store, socket }) {
     super(name);
     // this.store = store,
-    this.socket = socket
-    this.players = {}
-      //does not include our own player data, which is fine(?)
-      //all players are {socketID: playerSpriteObject}
+    this.socket = socket;
+    this.players = {};
   }
 
   preload() {
@@ -20,58 +18,53 @@ export default class Main extends Phaser.Scene {
 
   create() {
     // console.log('store', this.store);
-    
+
     const x = 100;
     const y = 300;
     this.player = this.physics.add.sprite(x, y, 'jessie');
     // this.socket.emit('newPlayer', {x, y})
-    console.log('this player', this.player)
+    console.log('this player', this.player);
     // console.log('socket id', this.socket.id)
-      //doesn't display socket id in chrome console, but it does work in terminal console
-      
-    //telling the server that i joined the game
-    this.socket.emit('newPlayer', this.player) //does the server know my socket id w.o me sending it? yes
+    // doesn't display socket id in chrome console, but it does work in terminal console
+
+    // telling the server that i joined the game
+    this.socket.emit('newPlayer', this.player); // does the server know my socket id w.o me sending it? yes
     // this.socket.emit('newPlayer', this.player, this.socket.id)
 
     // this.otherPlayers = this.physics.add.group()
 
-    //the server telling me that a new player joined
+    // the server telling me that a new player joined
     this.socket.on('playerJoined', (data) => {
       console.log('new player added', data);
       const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
       this.players[data.id] = newPlayer;
-      console.log("players obj", this.players)
+      console.log('players obj', this.players);
     });
 
-    //the server telling me all the existing players and their locations
+    // the server telling me all the existing players and their locations
     this.socket.on('allPlayers', (allPlayers) => {
       console.log('got all players from server', allPlayers);
-      
-      Object.keys(allPlayers).forEach(player => {
-        this.physics.add.sprite(player.x, player.y, 'jessie');
-      })
-      
-      // this.players = {...this.players, data}
-      //if this works, loop through obj and create sprite for each player
-      
+
+      // Object.keys(allPlayers).forEach((player) => {
+      //   this.physics.add.sprite(player.x, player.y, 'jessie');
+      // });
+
       // const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
       // this.players[data.id] = newPlayer;
-      console.log("updated players obj", this.players)
+      // console.log('updated players obj', this.players);
     });
-
-    //our client socket automatically emits 'disconnect' when we close the game
 
     this.socket.on('removePlayer', (data) => {
-      let player = this.players[data.id] //look up the player by their id that server emits
+      const player = this.players[data.id]; // look up the player by their id that server emits
       player.destroy();
-      console.log(`player ${data.id} left the game`)
+      console.log(`player ${data.id} left the game`);
     });
-    
+
     this.socket.on('playerMoved', (data) => {
       this.players[data.id].setPosition(data.x, data.y);
       // this.players[data.id].setRotation(data.rotation);
-    })
-    
+    });
+
     // this.socket.on('playerMoved', (data) => {
     //   if (!this.players[data.id]) return;
     //   console.log('this.players', this.players[data.id]);
@@ -83,14 +76,11 @@ export default class Main extends Phaser.Scene {
     //   // this.players[data.id].setRotation(data.rotation);
     // });
 
-
     // this.socket.on('allplayers', function (data) {
     //   for (var i = 0; i < data.length; i++) {
     //     Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
     //   }
     // });
-
-  
 
     this.player.setCollideWorldBounds(true);
     this.anims.create({
@@ -125,8 +115,12 @@ export default class Main extends Phaser.Scene {
   }
 
   update() {
-    this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
-    
+    this.socket.emit('playerMovement', {
+      x: this.player.x,
+      y: this.player.y,
+      rotation: this.player.rotation,
+    });
+
     const cursors = this.input.keyboard.createCursorKeys();
     if (cursors.left.isDown) {
       this.player.setVelocity(-160, 0);
