@@ -1,16 +1,18 @@
 import Phaser from 'phaser';
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
 
-export default class Main extends Phaser.Scene {
+export default class MainRoom extends Phaser.Scene {
   constructor(name, { store, socket }) {
-    super({ key: "Main" });
+    super({ key: "MainRoom" });
+    //why do we have "name" in constructor and super?
     // this.store = store,
     this.socket = socket
-    this.players = {}
     this.isClicking = false;
   }
 
   preload() {
+    this.load.image('room', 'assets/mainroom.png');
+    this.load.image('star', 'assets/star.png');
     this.load.spritesheet('jessie', 'sprites/jessie.png', {
       frameWidth: 47,
       frameHeight: 63,
@@ -18,71 +20,82 @@ export default class Main extends Phaser.Scene {
   }
 
   create() {
-    console.log("you're in the chatroom!")
     // console.log('store', this.store);
+    
+    this.add.image(400, 300, "room");
+    
+    const stars = this.physics.add.staticGroup();
+    
+    
+    stars.create(200, 450, "star");
+    
+    
+    //TODO - add collider between star (journal) and player
+    //on collision, enter Main game scene. 
+    //on collision, open journal with choice of feelings
+    
+    
     const x = 100;
     const y = 300;
     this.player = this.physics.add.sprite(x, y, 'jessie');
-    this.socket.emit('newPlayer', {x, y})
-
-    this.socket.on('playerJoined', (data) => {
-      console.log('new player added', data);
-      const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
-      this.players[data.id] = newPlayer;
+    
+    const journalText = this.add.text(300, 550, "Click the journal", {
+      fontSize: "32px",
+      fill: "#EE3D73",  //font color
     });
 
-    this.socket.on('playerMoved', (data) => {
-      if (!this.players[data.id]) return;
-      console.log('this.players', this.players[data.id]);
-      const playerMoved = this.players[data.id];
-      // const distance = Phaser.Math.Distance(playerMoved.x, playerMoved.y, data.x, data.y);
-      const distance = Math.sqrt((playerMoved.x - data.x) ^ 2 + (playerMoved.y - data.y) ^2);
-      this.add.tween(playerMoved).to(data, distance * 10).start();
-      // this.players[data.id].setPosition(data.x, data.y);
-      // this.players[data.id].setRotation(data.rotation);
-    });
-
-
-    // this.socket.on('allplayers', function (data) {
-    //   for (var i = 0; i < data.length; i++) {
-    //     Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
-    //   }
-    // });
-
-    // this.socket.on('remove', function (id) {
-    //   Game.removePlayer(id);
-    // });
+    this.physics.add.collider(this.player, stars, starTouched, null, this);
+    
+    function starTouched(player, star) {
+      console.log("star touched func")
+      this.scene.start("Main");
+    }
 
     this.player.setCollideWorldBounds(true);
-    this.anims.create({
-      key: 'turn',
-      frames: [{ key: 'jessie', frame: 7 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 9, end: 11 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'up',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 0, end: 2 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'down',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 6, end: 8 }),
-      frameRate: 10,
-      repeat: -1,
-    });
+    
+    // this.socket.on('playerMoved', (data) => {
+    //   if (!this.players[data.id]) return;
+    //   console.log('this.players', this.players[data.id]);
+    //   const playerMoved = this.players[data.id];
+    //   // const distance = Phaser.Math.Distance(playerMoved.x, playerMoved.y, data.x, data.y);
+    //   const distance = Math.sqrt((playerMoved.x - data.x) ^ 2 + (playerMoved.y - data.y) ^2);
+    //   this.add.tween(playerMoved).to(data, distance * 10).start();
+    //   // this.players[data.id].setPosition(data.x, data.y);
+    //   // this.players[data.id].setRotation(data.rotation);
+    // });
+
+    
+    
+    // this.anims.create({
+    //   key: 'turn',
+    //   frames: [{ key: 'jessie', frame: 7 }],
+    //   frameRate: 20,
+    // });
+    // this.anims.create({
+    //   key: 'right',
+    //   frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5 }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // });
+    // this.anims.create({
+    //   key: 'left',
+    //   frames: this.anims.generateFrameNumbers('jessie', { start: 9, end: 11 }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // });
+    // this.anims.create({
+    //   key: 'up',
+    //   frames: this.anims.generateFrameNumbers('jessie', { start: 0, end: 2 }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // });
+    // this.anims.create({
+    //   key: 'down',
+    //   frames: this.anims.generateFrameNumbers('jessie', { start: 6, end: 8 }),
+    //   frameRate: 10,
+    //   repeat: -1,
+    // });
+    
   }
 
   update() {
@@ -112,8 +125,7 @@ export default class Main extends Phaser.Scene {
       this.player.x -= 5;
     }
 
-    this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
-  
+
     //-----OLD PLAYER MOVEMENT ----------------------------------------------------------------
   //   const cursors = this.input.keyboard.createCursorKeys();
   //   if (cursors.left.isDown) {
