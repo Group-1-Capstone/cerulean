@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 // import { io } from 'socket.io-client';
 
+//FOR EVE ------------------------------------------------------------------------
+//added popup code, currently not recognizing "this.add.button"
+//if we can get this to work with different png instead of journal, that's fine
 export default class MainRoom extends Phaser.Scene {
   constructor(name, { store, socket }) {
     super({ key: "MainRoom" });
@@ -8,6 +11,9 @@ export default class MainRoom extends Phaser.Scene {
     // this.store = store,
     this.socket = socket
     this.isClicking = false;
+    this.button;
+    this.popup;
+    this.tween = null;
   }
 
   preload() {
@@ -17,19 +23,63 @@ export default class MainRoom extends Phaser.Scene {
       frameWidth: 47,
       frameHeight: 63,
     });
+    this.load.image('background', 'assets/journal.png');
+    this.load.image('close', 'assets/button.png');
+    this.load.image('button', 'assets/journal.png')
   }
 
   create() {
     // console.log('store', this.store);
-    
     this.add.image(400, 300, "room");
     
     const stars = this.physics.add.staticGroup();
     
     
     stars.create(200, 450, "star");
+
+    //button
+    this.button = this.add.button(400, 300, 'button', openWindow, this, 2, 1, 0);
+    //useHandCursor?
+    this.button.input.handCursor = true;
+
+    this.popup = this.add.sprite(400, 300, 'background');
+    this.popup.alpha = 0.8;
+    this.popup.anchor.set(0.5);
+    this.popup.inputEnabled = true;
     
-    
+    let pw = (this.popup.width / 2) - 30;
+    let ph = (this.popup.height / 2) - 8;
+
+    //  And click the close button to close it down again
+    let closeButton = this.make.sprite(pw, -ph, 'close');
+    closeButton.inputEnabled = true;
+    closeButton.input.priorityID = 1;
+    closeButton.input.useHandCursor = true;
+    closeButton.events.onInputDown.add(closeWindow, this);
+
+    this.popup.addChild(closeButton);
+
+    //  Shrink popup
+    this.popup.scale.set(0.1);
+
+    function openWindow() {
+      if ((this.tween !== null && this.tween.isRunning) || this.popup.scale.x === 1)
+    {
+        return;
+    }
+    //  create tween to pop open window, if window is not popped already
+    this.tween = this.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
+    }
+
+    function closeWindow() {
+      if (this.tween && this.tween.isRunning || this.popup.scale.x === 0.1)
+      {
+          return;
+      }
+      //  Create a tween that will close the window, if not closed
+      this.tween = this.add.tween(this.popup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
+  
+    }
     //TODO - add collider between star (journal) and player
     //on collision, enter Main game scene. 
     //on collision, open journal with choice of feelings
@@ -48,7 +98,7 @@ export default class MainRoom extends Phaser.Scene {
     
     function starTouched(player, star) {
       console.log("star touched func")
-      this.scene.start("Main");
+      this.scene.start("MeditationRoom");
     }
 
     this.player.setCollideWorldBounds(true);
@@ -95,12 +145,11 @@ export default class MainRoom extends Phaser.Scene {
     //   frameRate: 10,
     //   repeat: -1,
     // });
-    
   }
 
+  
+
   update() {
-    //----CLICK TO TELEPORT --JANKY--------------------------------------------------------
-    //NO ANIMATIONS on purpose!! Jessie facing backwards!
     if (!this.input.activePointer.isDown && this.isClicking == true) {
       this.player.setData("newX", this.input.activePointer.x);
       this.player.setData("newY", this.input.activePointer.y);

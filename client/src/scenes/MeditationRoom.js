@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 // import { io } from 'socket.io-client';
 
-export default class MainRoom extends Phaser.Scene {
+export default class MeditationRoom extends Phaser.Scene {
   constructor(name, { store, socket }) {
     super({ key: "MeditationRoom" });
     //why do we have "name" in constructor and super?
@@ -11,7 +11,7 @@ export default class MainRoom extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('room', 'assets/meditationRoom.png');
+    this.load.image('medRoom', 'assets/meditationroom.png');
     this.load.image('star', 'assets/star.png');
     this.load.spritesheet('jessie', 'sprites/jessie.png', {
       frameWidth: 47,
@@ -22,7 +22,7 @@ export default class MainRoom extends Phaser.Scene {
   create() {
     // console.log('store', this.store);
     
-    this.add.image(400, 300, "room");
+    this.add.image(400, 300, "medRoom");
     
     // const stars = this.physics.add.staticGroup();
     
