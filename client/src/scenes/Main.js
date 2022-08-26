@@ -8,6 +8,8 @@ export default class Main extends Phaser.Scene {
     this.socket = socket;
     this.players = {};
       //everyone except ourself. TODO: change name to this.otherPlayers here and everywhere in this file. 
+    this.isClicking = false;
+
   }
 
   preload() {
@@ -92,28 +94,61 @@ export default class Main extends Phaser.Scene {
   }
 
   update() {
+
     this.socket.emit('playerMovement', {
       x: this.player.x,
       y: this.player.y,
       rotation: this.player.rotation,
     });
 
-    const cursors = this.input.keyboard.createCursorKeys();
-    if (cursors.left.isDown) {
-      this.player.setVelocity(-160, 0);
-      this.player.anims.play('left', true);
-    } else if (cursors.right.isDown) {
-      this.player.setVelocity(160, 0);
-      this.player.anims.play('right', true);
-    } else if (cursors.up.isDown) {
-      this.player.setVelocity(0, -160);
-      this.player.anims.play('up', true);
-    } else if (cursors.down.isDown) {
-      this.player.setVelocity(0, 160);
-      this.player.anims.play('down', true);
-    } else {
-      this.player.setVelocity(0, 0);
-      this.player.anims.play('turn');
+    //----CLICK TO TELEPORT --JANKY--------------------------------------------------------
+    //NO ANIMATIONS on purpose!! Jessie facing backwards!
+    if (!this.input.activePointer.isDown && this.isClicking == true) {
+      this.player.setData("newX", this.input.activePointer.x);
+      this.player.setData("newY", this.input.activePointer.y);
+      this.isClicking = false;
+    } else if (this.isClicking == false && this.input.activePointer.isDown) { 
+      this.isClicking = true;
     }
+
+     if (Math.abs(this.player.y - this.player.getData("newY")) <= 10) {
+        this.player.y = this.player.getData("newY");
+     } else if (this.player.y < this.player.getData("newY")) {
+        this.player.y += 5;
+     }  else if (this.player.y > this.player.getData("newY")) {
+      this.player.y -= 5;
+     } 
+
+     if (Math.abs(this.player.x - this.player.getData("newX")) <= 10) {
+      this.player.x = this.player.getData("newX");
+    } else if (this.player.x < this.player.getData("newX")) {
+      this.player.x += 5;
+    } else if (this.player.x > this.player.getData("newX")) {
+      this.player.x -= 5;
+    }
+
+    this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
+  
+    //-----OLD PLAYER KEYBOARD MOVEMENT ----------------------------------------------------------------
+  //   const cursors = this.input.keyboard.createCursorKeys();
+  //   if (cursors.left.isDown) {
+  //     this.player.setVelocity(-160, 0);
+  //     this.player.anims.play('left', true);
+  //   } else if (cursors.right.isDown) {
+  //     this.player.setVelocity(160, 0);
+  //     this.player.anims.play('right', true);
+  //   } else if (cursors.up.isDown) {
+  //     this.player.setVelocity(0, -160);
+  //     this.player.anims.play('up', true);
+  //   } else if (cursors.down.isDown) {
+  //     this.player.setVelocity(0, 160);
+  //     this.player.anims.play('down', true);
+  //   } else {
+  //     this.player.setVelocity(0, 0);
+  //     this.player.anims.play('turn');
+  //   }
+  // }
+  // ---------------------------------------------------------------------------------------
   }
+
 }
