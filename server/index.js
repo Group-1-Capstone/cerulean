@@ -6,7 +6,7 @@ const app = require('./app');
 const seed = require('../seed');
 const socketListeners = require('./sockets');
 /* https://socket.io/docs/v4/client-api/#socketdisconnect */
-const allPlayers = [];
+const allPlayers = {};
 const init = async () => {
   try {
     if (process.env.SEED === 'true') {

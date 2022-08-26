@@ -11,9 +11,11 @@ module.exports = (socket, allPlayers) => {
     return allPlayers;
   }
   socket.on('newPlayer', (data) => {
-    allPlayers.push(data);
-    console.log('allPlayers', allPlayers);
+    // allPlayers.push(data);
+    
+    console.log('allPlayers', Object.keys(allPlayers));
     socket.emit('allPlayers', getAllPlayers());
+    allPlayers[socket.id] = data
 
     socket.broadcast.emit('playerJoined', { ...data, id: socket.id });
   });
@@ -22,6 +24,7 @@ module.exports = (socket, allPlayers) => {
     console.log('this socket DCd', socket.id); // this is the correct socket.id
     // is any data included when they disconnect?
     socket.broadcast.emit('removePlayer', { ...data, id: socket.id });
+    delete allPlayers[socket.id]
   });
 
   socket.on('playerMovement', (data) => {

@@ -23,7 +23,7 @@ export default class Main extends Phaser.Scene {
     const y = 300;
     this.player = this.physics.add.sprite(x, y, 'jessie');
     // this.socket.emit('newPlayer', {x, y})
-    console.log('this player', this.player);
+    // console.log('this player', this.player);
     // console.log('socket id', this.socket.id)
     // doesn't display socket id in chrome console, but it does work in terminal console
 
@@ -35,8 +35,9 @@ export default class Main extends Phaser.Scene {
 
     // the server telling me that a new player joined
     this.socket.on('playerJoined', (data) => {
-      console.log('new player added', data);
+      console.log('new player added', data.id);
       const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
+      // console.log("new player", newPlayer)
       this.players[data.id] = newPlayer;
       console.log('players obj', this.players);
     });
@@ -45,10 +46,14 @@ export default class Main extends Phaser.Scene {
     this.socket.on('allPlayers', (allPlayers) => {
       console.log('got all players from server', allPlayers);
 
-      // Object.keys(allPlayers).forEach((player) => {
-      //   this.physics.add.sprite(player.x, player.y, 'jessie');
-      // });
+      Object.keys(allPlayers).forEach((socketID) => {
+        console.log("allplayers foreach", socketID)
+        let player = this.physics.add.sprite(allPlayers[socketID].x, allPlayers[socketID].y, 'jessie');
+        this.players[socketID] = player
+        // this.players[socketID] = allPlayers[socketID]
+      });
 
+      console.log("this.players", this.players)
       // const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
       // this.players[data.id] = newPlayer;
       // console.log('updated players obj', this.players);
@@ -56,11 +61,14 @@ export default class Main extends Phaser.Scene {
 
     this.socket.on('removePlayer', (data) => {
       const player = this.players[data.id]; // look up the player by their id that server emits
+      console.log("player to destroy", data.id)
       player.destroy();
       console.log(`player ${data.id} left the game`);
+      delete this.players[data.id]
     });
 
     this.socket.on('playerMoved', (data) => {
+      // console.log("player that moved", this.players[data.id])
       this.players[data.id].setPosition(data.x, data.y);
       // this.players[data.id].setRotation(data.rotation);
     });
