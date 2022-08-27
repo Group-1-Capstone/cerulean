@@ -26,80 +26,120 @@ export default class MainRoom extends Phaser.Scene {
     this.load.image('background', 'assets/journal.png');
     this.load.image('close', 'assets/button.png');
     this.load.image('button', 'assets/journal.png')
+    this.load.image('chatDoor', 'assets/chatDoor.png')
+    this.load.image('gameDoor', 'assets/gameDoor.png')
+    this.load.image('medDoor', 'assets/medDoor.png')
+    
   }
 
   create() {
     // console.log('store', this.store);
     this.add.image(400, 300, "room");
     
+    const x = 100;
+    const y = 300;
+    this.player = this.physics.add.sprite(x, y, 'jessie');
+    
+    
+    const gameDoor = this.physics.add.image(250, 100, "gameDoor");
+    const chatDoor = this.physics.add.image(550, 100, "chatDoor");
+    const medDoor = this.physics.add.image(700, 100, "medDoor");
+    
+    this.physics.add.collider(this.player, gameDoor, gameDoorTouched, null, this);
+    this.physics.add.collider(this.player, chatDoor, chatDoorTouched, null, this);
+    this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
+    //try with overlap instead of collider?
+    
+    
+    //how do i name the door so that it's an obj name that i can pass into func?
+    
+    function gameDoorTouched(player, medDoor) {
+      console.log("game door touched func")
+      // this.scene.start("MeditationRoom");
+    }
+    
+    function chatDoorTouched(player, medDoor) {
+      console.log("chat door touched func")
+      this.scene.start("Main");
+    }
+    
+    function medDoorTouched(player, medDoor) {
+      console.log("med touched func")
+      this.scene.start("MeditationRoom");
+    }
+    
+    
+    
     const stars = this.physics.add.staticGroup();
     
-    
     stars.create(200, 450, "star");
+    
+    this.physics.add.collider(this.player, stars, starTouched, null, this);
+    
+    function starTouched(player, star) {
+      console.log("star touched func")
+      // this.scene.start("MeditationRoom");
+    }
+
 
     //button
-    this.button = this.add.button(400, 300, 'button', openWindow, this, 2, 1, 0);
-    //useHandCursor?
-    this.button.input.handCursor = true;
-
-    this.popup = this.add.sprite(400, 300, 'background');
-    this.popup.alpha = 0.8;
-    this.popup.anchor.set(0.5);
-    this.popup.inputEnabled = true;
     
-    let pw = (this.popup.width / 2) - 30;
-    let ph = (this.popup.height / 2) - 8;
+    // this.button = this.add.button(400, 300, 'button', openWindow, this, 2, 1, 0);
+    // //useHandCursor?
+    // this.button.input.handCursor = true;
 
-    //  And click the close button to close it down again
-    let closeButton = this.make.sprite(pw, -ph, 'close');
-    closeButton.inputEnabled = true;
-    closeButton.input.priorityID = 1;
-    closeButton.input.useHandCursor = true;
-    closeButton.events.onInputDown.add(closeWindow, this);
+    // this.popup = this.add.sprite(400, 300, 'background');
+    // this.popup.alpha = 0.8;
+    // this.popup.anchor.set(0.5);
+    // this.popup.inputEnabled = true;
+    
+    // let pw = (this.popup.width / 2) - 30;
+    // let ph = (this.popup.height / 2) - 8;
 
-    this.popup.addChild(closeButton);
+    // //  And click the close button to close it down again
+    // let closeButton = this.make.sprite(pw, -ph, 'close');
+    // closeButton.inputEnabled = true;
+    // closeButton.input.priorityID = 1;
+    // closeButton.input.useHandCursor = true;
+    // closeButton.events.onInputDown.add(closeWindow, this);
 
-    //  Shrink popup
-    this.popup.scale.set(0.1);
+    // this.popup.addChild(closeButton);
 
-    function openWindow() {
-      if ((this.tween !== null && this.tween.isRunning) || this.popup.scale.x === 1)
-    {
-        return;
-    }
-    //  create tween to pop open window, if window is not popped already
-    this.tween = this.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
-    }
+    // //  Shrink popup
+    // this.popup.scale.set(0.1);
 
-    function closeWindow() {
-      if (this.tween && this.tween.isRunning || this.popup.scale.x === 0.1)
-      {
-          return;
-      }
-      //  Create a tween that will close the window, if not closed
-      this.tween = this.add.tween(this.popup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
+    // function openWindow() {
+    //   if ((this.tween !== null && this.tween.isRunning) || this.popup.scale.x === 1)
+    // {
+    //     return;
+    // }
+    // //  create tween to pop open window, if window is not popped already
+    // this.tween = this.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true);
+    // }
+
+    // function closeWindow() {
+    //   if (this.tween && this.tween.isRunning || this.popup.scale.x === 0.1)
+    //   {
+    //       return;
+    //   }
+    //   //  Create a tween that will close the window, if not closed
+    //   this.tween = this.add.tween(this.popup.scale).to( { x: 0.1, y: 0.1 }, 500, Phaser.Easing.Elastic.In, true);
   
-    }
+    // }
+    
     //TODO - add collider between star (journal) and player
     //on collision, enter Main game scene. 
     //on collision, open journal with choice of feelings
     
     
-    const x = 100;
-    const y = 300;
-    this.player = this.physics.add.sprite(x, y, 'jessie');
+
     
     const journalText = this.add.text(300, 550, "Click the journal", {
       fontSize: "32px",
       fill: "#EE3D73",  //font color
     });
 
-    this.physics.add.collider(this.player, stars, starTouched, null, this);
-    
-    function starTouched(player, star) {
-      console.log("star touched func")
-      this.scene.start("MeditationRoom");
-    }
+   
 
     this.player.setCollideWorldBounds(true);
     
