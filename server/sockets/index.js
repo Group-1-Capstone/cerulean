@@ -21,8 +21,7 @@ module.exports = (socket, allPlayers) => {
   });
 
   socket.on('playerMovement', (data) => {
-    //TODO: have to update the server's allPlayers object with the new x and y?
-    // maybe something like allPlayers[socket.id] = {...allPlayers[socket.id], data}
+    allPlayers[socket.id] = {...allPlayers[socket.id], x: data.x, y: data.y}
     socket.broadcast.emit('playerMoved', { ...data, id: socket.id });
   });
 };

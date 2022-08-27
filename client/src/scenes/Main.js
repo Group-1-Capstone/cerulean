@@ -6,10 +6,8 @@ export default class Main extends Phaser.Scene {
     super(name);
     // this.store = store,
     this.socket = socket;
-    this.players = {};
-      //everyone except ourself. TODO: change name to this.otherPlayers here and everywhere in this file. 
+    this.otherPlayers = {};
     this.isClicking = false;
-
   }
 
   preload() {
@@ -30,10 +28,8 @@ export default class Main extends Phaser.Scene {
 
     // the server telling me that a new player joined
     this.socket.on('playerJoined', (data) => {
-      console.log('new player added', data.id);
       const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
-      this.players[data.id] = newPlayer;
-      console.log('players obj', this.players);
+      this.otherPlayers[data.id] = newPlayer;
     });
 
     // the server telling me all the existing players and their locations
@@ -41,24 +37,21 @@ export default class Main extends Phaser.Scene {
       console.log('got all players from server', allPlayers);
 
       Object.keys(allPlayers).forEach((socketID) => {
-        console.log("adding this player to this.players:", socketID)
         let player = this.physics.add.sprite(allPlayers[socketID].x, allPlayers[socketID].y, 'jessie');
-        this.players[socketID] = player
+        this.otherPlayers[socketID] = player
       });
-
-      console.log("updated this.players:", this.players)
     });
 
     this.socket.on('removePlayer', (data) => {
-      const player = this.players[data.id];
+      const player = this.otherPlayers[data.id];
       player.destroy();
       console.log(`player ${data.id} left the game`);
-      delete this.players[data.id]
+      delete this.otherPlayers[data.id]
     });
 
     this.socket.on('playerMoved', (data) => {
-      this.players[data.id].setPosition(data.x, data.y);
-      // this.players[data.id].setRotation(data.rotation);
+      this.otherPlayers[data.id].setPosition(data.x, data.y);
+      // this.otherPlayers[data.id].setRotation(data.rotation);
     });
 
     this.player.setCollideWorldBounds(true);
@@ -94,13 +87,7 @@ export default class Main extends Phaser.Scene {
   }
 
   update() {
-
-    this.socket.emit('playerMovement', {
-      x: this.player.x,
-      y: this.player.y,
-      rotation: this.player.rotation,
-    });
-
+    
     //----CLICK TO TELEPORT --JANKY--------------------------------------------------------
     //NO ANIMATIONS on purpose!! Jessie facing backwards!
     if (!this.input.activePointer.isDown && this.isClicking == true) {
@@ -115,19 +102,21 @@ export default class Main extends Phaser.Scene {
         this.player.y = this.player.getData("newY");
      } else if (this.player.y < this.player.getData("newY")) {
         this.player.y += 5;
+        this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
      }  else if (this.player.y > this.player.getData("newY")) {
       this.player.y -= 5;
+      this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
      } 
 
      if (Math.abs(this.player.x - this.player.getData("newX")) <= 10) {
       this.player.x = this.player.getData("newX");
     } else if (this.player.x < this.player.getData("newX")) {
       this.player.x += 5;
+      this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
     } else if (this.player.x > this.player.getData("newX")) {
       this.player.x -= 5;
+      this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
     }
-
-    this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
   
     //-----OLD PLAYER KEYBOARD MOVEMENT ----------------------------------------------------------------
   //   const cursors = this.input.keyboard.createCursorKeys();
