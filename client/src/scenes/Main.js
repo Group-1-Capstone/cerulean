@@ -11,19 +11,31 @@ export default class Main extends Phaser.Scene {
   }
 
   preload() {
-    this.load.spritesheet('jessie', 'sprites/jessie.png', {
-      frameWidth: 47,
-      frameHeight: 63,
-    });
+    this.load.image('jessie', 'assets/jessieFront.png');
+    // this.load.spritesheet('jessie', 'sprites/jessie.png', {
+    //   frameWidth: 47,
+    //   frameHeight: 63,
+    // });
+    this.load.image('exit', 'assets/exit.png')
   }
 
   create() {
     console.log("you're in the chatroom!")
     // console.log('store', this.store);
+    
+    const exit = this.physics.add.image(700, 100, "exit");
+    
+    function exitTouched() {
+      console.log("touched exit func")
+      this.scene.start("MainRoom");
+    }
+    
     const x = 100;
     const y = 300;
     this.player = this.physics.add.sprite(x, y, 'jessie');
     this.socket.emit('newPlayer', {x, y})
+
+    this.physics.add.collider(this.player, exit, exitTouched, null, this);
 
     this.socket.on('playerJoined', (data) => {
       console.log('new player added', data);
@@ -54,35 +66,7 @@ export default class Main extends Phaser.Scene {
     // });
 
     this.player.setCollideWorldBounds(true);
-    this.anims.create({
-      key: 'turn',
-      frames: [{ key: 'jessie', frame: 7 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 9, end: 11 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'up',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 0, end: 2 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'down',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 6, end: 8 }),
-      frameRate: 10,
-      repeat: -1,
-    });
+    
   }
 
   update() {

@@ -45,11 +45,6 @@ export default class MainRoom extends Phaser.Scene {
     const chatDoor = this.physics.add.image(550, 100, "chatDoor");
     const medDoor = this.physics.add.image(700, 100, "medDoor");
     
-    this.physics.add.collider(this.player, gameDoor, gameDoorTouched, null, this);
-    this.physics.add.collider(this.player, chatDoor, chatDoorTouched, null, this);
-    this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
-    //try with overlap instead of collider?
-    
     function gameDoorTouched() {
       console.log("game door touched func")
       // this.scene.start("GameRoom");
@@ -61,9 +56,14 @@ export default class MainRoom extends Phaser.Scene {
     }
     
     function medDoorTouched() {
-      console.log("med touched func")
+      console.log("med door touched func")
       this.scene.start("MeditationRoom");
     }
+    
+    this.physics.add.collider(this.player, gameDoor, gameDoorTouched, null, this);
+    this.physics.add.collider(this.player, chatDoor, chatDoorTouched, null, this);
+    this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
+    //try with overlap instead of collider?
     
     const stars = this.physics.add.staticGroup();
     
