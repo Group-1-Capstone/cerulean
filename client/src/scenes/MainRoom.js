@@ -19,10 +19,11 @@ export default class MainRoom extends Phaser.Scene {
   preload() {
     this.load.image('room', 'assets/mainroom.png');
     this.load.image('star', 'assets/star.png');
-    this.load.spritesheet('jessie', 'sprites/jessie.png', {
-      frameWidth: 47,
-      frameHeight: 63,
-    });
+    this.load.image('jessie', 'assets/jessieFront.png');
+    // this.load.spritesheet('jessie', 'sprites/jessie.png', {
+    //   frameWidth: 47,
+    //   frameHeight: 63,
+    // });
     this.load.image('background', 'assets/journal.png');
     this.load.image('close', 'assets/button.png');
     this.load.image('button', 'assets/journal.png')
@@ -40,7 +41,6 @@ export default class MainRoom extends Phaser.Scene {
     const y = 300;
     this.player = this.physics.add.sprite(x, y, 'jessie');
     
-    
     const gameDoor = this.physics.add.image(250, 100, "gameDoor");
     const chatDoor = this.physics.add.image(550, 100, "chatDoor");
     const medDoor = this.physics.add.image(700, 100, "medDoor");
@@ -50,25 +50,20 @@ export default class MainRoom extends Phaser.Scene {
     this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
     //try with overlap instead of collider?
     
-    
-    //how do i name the door so that it's an obj name that i can pass into func?
-    
-    function gameDoorTouched(player, medDoor) {
+    function gameDoorTouched() {
       console.log("game door touched func")
-      // this.scene.start("MeditationRoom");
+      // this.scene.start("GameRoom");
     }
     
-    function chatDoorTouched(player, medDoor) {
+    function chatDoorTouched() {
       console.log("chat door touched func")
       this.scene.start("Main");
     }
     
-    function medDoorTouched(player, medDoor) {
+    function medDoorTouched() {
       console.log("med touched func")
       this.scene.start("MeditationRoom");
     }
-    
-    
     
     const stars = this.physics.add.staticGroup();
     
@@ -78,7 +73,6 @@ export default class MainRoom extends Phaser.Scene {
     
     function starTouched(player, star) {
       console.log("star touched func")
-      // this.scene.start("MeditationRoom");
     }
 
 
@@ -131,7 +125,8 @@ export default class MainRoom extends Phaser.Scene {
     //on collision, enter Main game scene. 
     //on collision, open journal with choice of feelings
     
-    
+    // use setTint method to make the journal glow?
+    //e.g. setTint(0xff0000); 0x + hexcode
 
     
     const journalText = this.add.text(300, 550, "Click the journal", {
