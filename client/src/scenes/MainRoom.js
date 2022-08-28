@@ -52,7 +52,7 @@ export default class MainRoom extends Phaser.Scene {
     
     function chatDoorTouched() {
       console.log("chat door touched func")
-      this.scene.start("Main");
+      this.scene.start("ChatRoom");
     }
     
     function medDoorTouched() {

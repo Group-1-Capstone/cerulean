@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import Main from './scenes/Main';
 
 // const socket = io.connect();
 

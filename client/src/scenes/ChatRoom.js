@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { io } from 'socket.io-client';
 
-export default class Main extends Phaser.Scene {
+export default class ChatRoom extends Phaser.Scene {
   constructor(name, { store, socket }) {
-    super({ key: "Main" });
+    super({ key: "ChatRoom" });
     // this.store = store,
     this.socket = socket
     this.players = {}
