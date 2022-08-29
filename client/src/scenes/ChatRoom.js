@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { io } from 'socket.io-client';
 
-export default class Main extends Phaser.Scene {
+export default class ChatRoom extends Phaser.Scene {
   constructor(name, { store, socket }) {
-    super(name);
+    super({ key: "ChatRoom" });
     // this.store = store,
     this.socket = socket;
     this.otherPlayers = {};
@@ -11,22 +11,35 @@ export default class Main extends Phaser.Scene {
   }
 
   preload() {
-    this.load.spritesheet('jessie', 'sprites/jessie.png', {
-      frameWidth: 47,
-      frameHeight: 63,
-    });
+    this.load.image('jessie', 'assets/jessieFront.png');
+    // this.load.spritesheet('jessie', 'sprites/jessie.png', {
+    //   frameWidth: 47,
+    //   frameHeight: 63,
+    // });
+    this.load.image('exit', 'assets/exit.png')
   }
 
   create() {
 
+    console.log("you're in the chatroom!")
+    // console.log('store', this.store);
+    
+    const exit = this.physics.add.image(700, 100, "exit");
+    
+    function exitTouched() {
+      console.log("touched exit func")
+      this.scene.start("MainRoom");
+    }
+    
     const x = 100;
     const y = 300;
     this.player = this.physics.add.sprite(x, y, 'jessie');
     
+    this.physics.add.collider(this.player, exit, exitTouched, null, this);
+    
     // telling the server that i joined the game
     this.socket.emit('newPlayer', this.player);
 
-    // the server telling me that a new player joined
     this.socket.on('playerJoined', (data) => {
       const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
       this.otherPlayers[data.id] = newPlayer;
@@ -55,35 +68,7 @@ export default class Main extends Phaser.Scene {
     });
 
     this.player.setCollideWorldBounds(true);
-    this.anims.create({
-      key: 'turn',
-      frames: [{ key: 'jessie', frame: 7 }],
-      frameRate: 20,
-    });
-    this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 3, end: 5 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 9, end: 11 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'up',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 0, end: 2 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'down',
-      frames: this.anims.generateFrameNumbers('jessie', { start: 6, end: 8 }),
-      frameRate: 10,
-      repeat: -1,
-    });
+    
   }
 
   update() {

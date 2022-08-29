@@ -4,7 +4,6 @@ import styles from "./Game.module.css"
 import config from "../config"
 import usePhaser from "../hooks/usePhaser"
 import { useFullscreen } from "ahooks"
-import SocketCommands from '../scenes/SocketCommands';
 
 export default function Game() {
   const { game, gameContainer } = usePhaser(config)
