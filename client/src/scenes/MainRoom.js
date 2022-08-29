@@ -11,6 +11,7 @@ export default class MainRoom extends Phaser.Scene {
   }
 
   preload() {
+    this.load.plugin('rexglowfilterpipelineplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexglowfilterpipelineplugin.min.js', true);
     this.load.image('room', 'assets/mainroom.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('jessie', 'assets/jessieFront.png');
@@ -58,12 +59,32 @@ export default class MainRoom extends Phaser.Scene {
     this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
     
     //star is a placeholder for the small journal that opens up on collision
-    const stars = this.physics.add.staticGroup();
-    stars.create(400, 250, "star");
-    this.physics.add.collider(this.player, stars, starTouched, null, this);
-    
+    //const star = this.physics.add.image(400, 250, "star");
+    const star = this.physics.add.image(700, 300, "star");
+    this.physics.add.collider(this.player, star, starTouched, null, this);
+
+    const Between = Phaser.Math.Between;
+    const postFxPlugin = this.plugins.get('rexglowfilterpipelineplugin');
+    const pipeline = postFxPlugin.add(star);
+    star.glowTask = star.scene.tweens.add({
+      targets: pipeline,
+      intensity: 0.02,
+      ease: 'Linear',
+      duration: Between(500, 1000),
+      repeat: -1,
+      yoyo: true
+  });
+
     function starTouched(player, star) {
-      
+      //disable glow
+      star.glowTask = star.scene.tweens.add({
+        targets: pipeline,
+        intensity: 0.0,
+        ease: 'Linear',
+        duration: 0,
+        repeat: -1
+    });
+
       this.add.image(400,300, 'journal')
       const promptText = this.add.text(200, 250, "How are you feeling?", {
       fontSize: "32px",
