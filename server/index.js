@@ -6,7 +6,7 @@ const app = require('./app');
 const seed = require('../seed');
 const socketListeners = require('./sockets');
 /* https://socket.io/docs/v4/client-api/#socketdisconnect */
-
+const allPlayers = {};
 const init = async () => {
   try {
     if (process.env.SEED === 'true') {
@@ -19,9 +19,8 @@ const init = async () => {
     );
     const socketServer = new io.Server(server);
     socketServer.on('connection', (socket) => {
-      const disconnect = socketListeners(socket);
-      // const socketId = `${socket.id}`;
-      console.log(`Connection from client ${socket.id}`);
+      socketListeners(socket, allPlayers);
+      console.log(`Connection from player ${socket.id}`);
     });
   } catch (ex) {
     console.log(ex);
