@@ -19,17 +19,14 @@ export default class MainRoom extends Phaser.Scene {
     this.load.image('room', 'assets/mainroom.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('jessie', 'assets/jessieFront.png');
-    // this.load.spritesheet('jessie', 'sprites/jessie.png', {
-    //   frameWidth: 47,
-    //   frameHeight: 63,
-    // });
-    this.load.image('journal', 'assets/journal.png');
-    this.load.image('chatDoor', 'assets/chatDoor.png');
-    this.load.image('gameDoor', 'assets/gameDoor.png');
-    this.load.image('medDoor', 'assets/medDoor.png');
-    this.load.image('chatRoomButton', 'assets/chatRoomButton.png');
-    this.load.image('gameRoomButton', 'assets/gameRoomButton.png');
-    this.load.image('medRoomButton', 'assets/medRoomButton.png');
+    this.load.image('journal', 'assets/journal.png')
+    this.load.image('chatDoor', 'assets/chatDoor.png')
+    this.load.image('gameDoor', 'assets/gameDoor.png')
+    this.load.image('medDoor', 'assets/medDoor.png')
+    this.load.image('chatRoomButton', 'assets/chatRoomButton.png')
+    this.load.image('gameRoomButton', 'assets/gameRoomButton.png')
+    this.load.image('medRoomButton', 'assets/medRoomButton.png')
+    
   }
 
   create() {
@@ -96,8 +93,8 @@ export default class MainRoom extends Phaser.Scene {
         intensity: 0.0,
         ease: 'Linear',
         duration: 0,
-        repeat: -1,
-      });
+        repeat: -1
+    });
 
       this.add.image(400, 300, 'journal');
       const promptText = this.add.text(200, 250, 'How are you feeling?', {
