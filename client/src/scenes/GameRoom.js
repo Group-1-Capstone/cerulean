@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export default class SinglePlayerGame extends Phaser.Scene {
-  constructor(name, { socket }) {
+  constructor({ socket }) {
     super({ key: 'GameRoom' });
     this.socket = socket;
     this.player = {};
@@ -50,11 +50,10 @@ export default class SinglePlayerGame extends Phaser.Scene {
       .sprite(0, height, 'characterAtlas')
       .setOrigin(0, 1)
       .setCollideWorldBounds(true)
-      .setGravityY(5)
+      .setGravityY(5000)
       .play('run');
-    this.handleInputs();
 
-    this.physics.add.collider(this.player, this.ground);
+    this.physics.add.collider(player, this.ground);
   }
 
   /* this.input.pointer //(property) globalThis.Phaser.Input.InputPlugin.pointer1: Phaser.Input.Pointer
