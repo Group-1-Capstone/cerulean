@@ -19,13 +19,18 @@ export default class SinglePlayerGame extends Phaser.Scene {
   }
 
   create() {
+    // canvas height and width
+    const { height, width } = this.game.config;
+    /* var image = scene.add.tileSprite(x, y, width, height, textureKey); */
     // speed the ground moves in px/second
     this.gameSpeed = 10;
-    const { height, width } = this.game.config;
-
+    console.log('this', this);
     this.ground = this.add
       .tileSprite(0, height, width, 26, 'ground')
       .setOrigin(0, 1);
+
+    console.log('this.ground', this.ground);
+
     this.anims.create({
       key: 'run',
       frames: this.anims.generateFrameNames('characterAtlas', {
@@ -35,16 +40,18 @@ export default class SinglePlayerGame extends Phaser.Scene {
       }),
       repeat: -1,
     });
+
     // this.anims.create({
     //   key: 'jump',
+    //   frames:
     // });
 
     this.player = this.physics.add
-      .sprite(0, 500, 'dino')
+      .sprite(0, height, 'characterAtlas')
       .setOrigin(0, 1)
       .setCollideWorldBounds(true)
-      .setGravityY(10);
-    this.player.play('run');
+      .setGravityY(5)
+      .play('run');
     this.handleInputs();
 
     this.physics.add.collider(this.player, this.ground);
@@ -54,6 +61,9 @@ export default class SinglePlayerGame extends Phaser.Scene {
     A touch-based Pointer object. This will be undefined by default unless you add a new Pointer using addPointer. */
   handleInputs() {
     this.input.keyboard.on('keydown_SPACE', () => {
+      if (!this.player.body.onFloor() || this.player.body.velocity.x > 0) {
+        return;
+      }
       this.player.setVelocityY(-1600);
     });
   }
