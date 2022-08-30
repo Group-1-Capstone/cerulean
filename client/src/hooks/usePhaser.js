@@ -22,8 +22,8 @@ export default function usePhaser(config) {
       game.current = new Phaser.Game({
         ...config,
         parent: gameContainer.current,
-        scene: [gameRoom],
-        // scene: [mainRoom, meditationRoom, chatRoom, gameRoom],
+        // scene: [gameRoom],
+        scene: [mainRoom, meditationRoom, chatRoom, gameRoom],
       });
     }
   }, [config]);
