@@ -24,7 +24,7 @@ export default class SinglePlayerGame extends Phaser.Scene {
     const { height, width } = this.game.config;
 
     this.ground = this.add
-      .tileSprite(0, 600, 800, 26, 'ground')
+      .tileSprite(0, height, width, 26, 'ground')
       .setOrigin(0, 1);
     this.anims.create({
       key: 'run',
@@ -35,10 +35,27 @@ export default class SinglePlayerGame extends Phaser.Scene {
       }),
       repeat: -1,
     });
-    const character = this.add
-      .sprite(0, 625, 'dino')
+    // this.anims.create({
+    //   key: 'jump',
+    // });
+
+    this.player = this.physics.add
+      .sprite(0, 500, 'dino')
       .setOrigin(0, 1)
-      .play('run');
+      .setCollideWorldBounds(true)
+      .setGravityY(10);
+    this.player.play('run');
+    this.handleInputs();
+
+    this.physics.add.collider(this.player, this.ground);
+  }
+
+  /* this.input.pointer //(property) globalThis.Phaser.Input.InputPlugin.pointer1: Phaser.Input.Pointer
+    A touch-based Pointer object. This will be undefined by default unless you add a new Pointer using addPointer. */
+  handleInputs() {
+    this.input.keyboard.on('keydown_SPACE', () => {
+      this.player.setVelocityY(-1600);
+    });
   }
 
   // 60fps
