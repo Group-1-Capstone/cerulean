@@ -9,6 +9,8 @@ const config = {
   width: 800,
   height: 600,
   // scene: [main],
+  pixelArt: true,
+  transparent: true,
   physics: {
     default: 'arcade',
     arcade: {
