@@ -23,7 +23,7 @@ export default function usePhaser(config) {
         ...config,
         parent: gameContainer.current,
         scene: [gameRoom],
-        // scene: [mainRoom, meditationRoom, chatRoom, gameRoom], // main
+        // scene: [mainRoom, meditationRoom, chatRoom, gameRoom],
       });
     }
   }, [config]);
