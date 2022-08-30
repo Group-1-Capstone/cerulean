@@ -12,7 +12,7 @@ export default class SinglePlayerGame extends Phaser.Scene {
     this.load.image('restart', 'assets/dino/restart.png');
     this.load.image('game-over', 'assets/dino/game-over.png');
     this.load.atlas(
-      'alec',
+      'characterAtlas',
       'assets/dino/spritesheetalec.png',
       'assets/dino/spritesheetalec.json'
     );
@@ -22,5 +22,18 @@ export default class SinglePlayerGame extends Phaser.Scene {
     this.ground = this.add
       .tileSprite(0, 600, 800, 26, 'ground')
       .setOrigin(0, 1);
+    this.anims.create({
+      key: 'run',
+      frames: this.anims.generateFrameNames('characterAtlas', {
+        prefix: 'alec',
+        end: 8,
+        zeroPad: 1,
+      }),
+      repeat: -1,
+    });
+    const character = this.add
+      .sprite(0, 625, 'dino')
+      .setOrigin(0, 1)
+      .play('run');
   }
 }
