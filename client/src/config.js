@@ -9,10 +9,12 @@ const config = {
   width: 800,
   height: 600,
   // scene: [main],
+  pixelArt: true,
+  transparent: true,
   physics: {
     default: 'arcade',
     arcade: {
-      // debug: true,
+      debug: true,
       // gravity: { y: 20 },
       enableBody: true,
     },
