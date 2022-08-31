@@ -19,6 +19,7 @@ export default function Game() {
         style={{ border: '2px solid red' }}
         className={styles.gameContainer}
         ref={gameContainer}
+        id='gameContainer'
       >
         <header>
           <h1>Game Title</h1>

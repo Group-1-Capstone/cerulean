@@ -96,8 +96,8 @@ export default class MainRoom extends Phaser.Scene {
         intensity: 0.0,
         ease: 'Linear',
         duration: 0,
-        repeat: -1,
-      });
+        repeat: -1
+    });
 
       this.add.image(400, 300, 'journal');
       const promptText = this.add.text(200, 250, 'How are you feeling?', {

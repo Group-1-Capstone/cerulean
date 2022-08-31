@@ -11,6 +11,7 @@ const config = {
   // scene: [main],
   pixelArt: true,
   transparent: true,
+  parent: 'gameContainer',
   physics: {
     default: 'arcade',
     arcade: {
