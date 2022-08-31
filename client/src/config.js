@@ -20,6 +20,9 @@ const config = {
       enableBody: true,
     },
   },
+  dom: {
+    createContainer: true
+},
 };
 
 export default config;
