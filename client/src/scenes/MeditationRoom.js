@@ -14,6 +14,7 @@ export default class MeditationRoom extends Phaser.Scene {
     this.load.image('medRoom', 'assets/meditationroom.png');
     this.load.image('exit', 'assets/exit.png')
     this.load.image('jessie', 'assets/jessieFront.png');
+    this.load.audio('music', 'assets/relaxing.mp3');
     // this.load.spritesheet('jessie', 'sprites/jessie.png', {
     //   frameWidth: 47,
     //   frameHeight: 63,
@@ -23,11 +24,15 @@ export default class MeditationRoom extends Phaser.Scene {
   create() {
     
     this.add.image(400, 300, "medRoom");
+
+    const music = this.sound.add('music');
+    music.play();
   
     const exit = this.physics.add.image(700, 100, "exit");
     
     function exitTouched() {
       console.log("touched exit func")
+      music.destroy();
       this.scene.start("MainRoom");
     }
     
