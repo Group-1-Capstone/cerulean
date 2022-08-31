@@ -1,10 +1,9 @@
 import Phaser from 'phaser';
 
-export default class SinglePlayerGame extends Phaser.Scene {
-  constructor(name, { socket }) {
+export default class GameRoom extends Phaser.Scene {
+  constructor({ socket }) {
     super({ key: 'GameRoom' });
     this.socket = socket;
-    this.player = {};
     this.cloudsWhite;
     this.cloudsWhiteSmall;
   }
@@ -20,6 +19,8 @@ export default class SinglePlayerGame extends Phaser.Scene {
       'assets/dino/spritesheetalec.png',
       'assets/dino/spritesheetalec.json'
     );
+    // this.load.image('rock', 'assets/dino/disk-1.png' )
+    this.load.image('rock', 'assets/dino/rock.png' )
   }
 
   create() {
@@ -30,12 +31,11 @@ export default class SinglePlayerGame extends Phaser.Scene {
     /* var image = scene.add.tileSprite(x, y, width, height, textureKey); */
     // speed the ground moves in px/second
     this.gameSpeed = 10;
-    console.log('this', this);
     this.ground = this.add
-      .tileSprite(0, height, width, 26, 'ground')
+      .tileSprite(0, height, width, 32, 'ground') //26
       .setOrigin(0, 1);
 
-    console.log('this.ground', this.ground);
+    this.respawnTime = 0;
 
     this.cloudsWhite = this.add.tileSprite(400, 260, 800, 420, 'clouds-white');
     this.cloudsWhiteSmall = this.add.tileSprite(400, 260, 800, 415, 'clouds-white-small');
@@ -49,39 +49,120 @@ export default class SinglePlayerGame extends Phaser.Scene {
       }),
       repeat: -1,
     });
-
-    // this.anims.create({
-    //   key: 'jump',
-    //   frames:
-    // });
-
+    
     this.player = this.physics.add
       .sprite(0, height, 'characterAtlas')
       .setOrigin(0, 1)
       .setCollideWorldBounds(true)
-      .setGravityY(5)
+      .setGravityY(5000)
       .play('run');
-    this.handleInputs();
+      
+    // this.physics.add.collider(this.player, this.ground);
+    //this isn't doing anything since this.ground wasn't added with physics
+    //and if you physics.add the ground it breaks. 
+    
+    this.obsticles = this.physics.add.group();
+    
+    this.physics.add.collider(this.player, this.obsticles, () => {
 
-    this.physics.add.collider(this.player, this.ground);
+      const gameOverText = this.add.text(400, 300, "The End", {
+          fontSize: "64px",
+          fill: "#EE3D73",  //font color
+        });
+        
+      //TODO: make everything stop, not just alec
+      //he only stops if he's in the air, he keeps walking after colliding
+      this.physics.pause();
+      this.player.anims.stop();
+      // this.isGameRunning = false;
+      // this.anims.pauseAll();
+      // this.respawnTime = 0;
+      // this.gameSpeed = 10;
+      // this.gameOverScreen.setAlpha(1);
+      // this.score = 0;
+      // this.hitSound.play();
+    }, null, this);
+    
+    this.score = 0
+    
+    //end of create func
   }
 
-  /* this.input.pointer //(property) globalThis.Phaser.Input.InputPlugin.pointer1: Phaser.Input.Pointer
-    A touch-based Pointer object. This will be undefined by default unless you add a new Pointer using addPointer. */
-  handleInputs() {
-    this.input.keyboard.on('keydown_SPACE', () => {
-      if (!this.player.body.onFloor() || this.player.body.velocity.x > 0) {
-        return;
-      }
-      this.player.setVelocityY(-1600);
-    });
+  placeObsticle() {
+    // change obsticleNum to match our num of obstacles
+    // e.g. Math.floor(Math.random() * 7) is 0 through 6.  
+    // const obsticleNum = Math.floor(Math.random() * 7) + 1;
+    
+    //do an array and create obstacle[random index] instead of tutorial naming system
+    
+    const distance = Phaser.Math.Between(600,900);
+    //his screen is wider, maybe use this.game.config.width
+
+    let obsticle;
+    // if (obsticleNum > 6) {
+    //   const enemyHeight = [20, 50];
+    //   obsticle = this.obsticles.create(this.game.config.width + distance, this.game.config.height - enemyHeight[Math.floor(Math.random() * 2)], `enemy-bird`)
+    //     .setOrigin(0, 1)
+    //     obsticle.play('enemy-dino-fly', 1);
+    //   obsticle.body.height = obsticle.body.height / 1.5;
+    // } else {
+    //   obsticle = this.obsticles.create(this.game.config.width + distance, this.game.config.height, `obsticle-${obsticleNum}`)
+    //     .setOrigin(0, 1);
+
+    // obsticle.body.offset.y = +10;
+    // }
+    
+    
+    // obsticle = this.obsticles.create(600, 600, 'rock')
+    //     .setOrigin(0, 1);
+        
+    obsticle = this.obsticles.create(this.game.config.width + distance, this.game.config.height, 'rock')
+        .setScale(0.5)
+        .setOrigin(0, 1);
+
+     obsticle.body.offset.y = +10;
+
+    obsticle.setImmovable();
   }
 
   // 60fps
-  update() {
-    this.cloudsWhite.tilePositionX += 0.5;
-    this.cloudsWhiteSmall.tilePositionX += 0.25;
+  update(time, delta) {
+    //see if we need time param - yes, but why?
+    //delta is the time from the last frame
+    
+    this.cloudsWhite.tilePositionX += 0.25;
+    this.cloudsWhiteSmall.tilePositionX += 0.5;
+    
     // every update the ground tile will move forward by this amt
     this.ground.tilePositionX += this.gameSpeed;
+    
+    Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
+    // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
+    
+    this.respawnTime += delta * this.gameSpeed * 0.08;
+    // this.gameSpeed += 0.01
+    
+    if (this.respawnTime >= 1500) {
+      //1500 ms
+      this.placeObsticle();
+      this.respawnTime = 0;
+    }
+    
+    if(this.input.activePointer.isDown) {
+      if (!this.player.body.onFloor()) {
+        return;
+      }
+      this.player.setVelocityY(-1600); //-1600
+    }
+    
+    if (this.player.body.deltaAbsY() > 0) {
+        //while in air
+      this.player.anims.stop();
+      this.player.setFrame('alec8');
+    } else {
+      this.player.play('run', true);
+    }
+    
   }
+  
 }

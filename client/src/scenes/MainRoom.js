@@ -133,7 +133,7 @@ export default class MainRoom extends Phaser.Scene {
       gameRoomButton.on(
         'pointerup',
         () => {
-          // this.scene.start("GameRoom");
+          this.scene.start("GameRoom");
         },
         this
       );
@@ -150,7 +150,7 @@ export default class MainRoom extends Phaser.Scene {
       );
     }
 
-    const journalText = this.add.text(300, 550, 'Walk over to the journal', {
+    const journalText = this.add.text(150, 550, 'Walk over to the star/journal', {
       fontSize: '32px',
       fill: '#EE3D73', // font color
     });
