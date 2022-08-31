@@ -16,7 +16,7 @@ export default function Game() {
   return (
     <div className={styles.game}>
       <div
-        style={{ border: '2px solid red' }}
+        //style={{ border: '2px solid red' }}
         className={styles.gameContainer}
         ref={gameContainer}
         id='gameContainer'
