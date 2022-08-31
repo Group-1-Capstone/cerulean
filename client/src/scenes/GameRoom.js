@@ -20,6 +20,7 @@ export default class SinglePlayerGame extends Phaser.Scene {
       'assets/dino/spritesheetalec.png',
       'assets/dino/spritesheetalec.json'
     );
+    this.load.image('rock', 'assets/dino/rock.png' )
   }
 
   create() {
@@ -62,24 +63,56 @@ export default class SinglePlayerGame extends Phaser.Scene {
       .setGravityY(5000)
       .play('run');
       
-    
+    const rock = this.physics.add.image(600, height, 'rock').setOrigin(0, 1)
+      
 
-    this.physics.add.collider(this.player, this.ground);
+    // this.physics.add.collider(this.player, this.ground);
+    //this isn't doing anything since this.ground wasn't added with physics
+    //and if you physics.add the ground it breaks. 
     
     console.log("player", this.player)
+    console.log("body", this.player.body)
+    console.log("blocked down", this.player.body.blocked.down)
     console.log("touching", this.player.body.touching.down)
     console.log("onFloor", this.player.body.onFloor())
+    
+    
+    
+    this.handleInputs()
   }
 
   /* this.input.pointer //(property) globalThis.Phaser.Input.InputPlugin.pointer1: Phaser.Input.Pointer
     A touch-based Pointer object. This will be undefined by default unless you add a new Pointer using addPointer. */
   handleInputs() {
-    this.input.keyboard.on('keydown_SPACE', () => {
-      if (!this.player.body.onFloor() || this.player.body.velocity.x > 0) {
+    console.log("inputs....blocked down", this.player.body.blocked.down)
+    
+    if(this.input.activePointer.isDown) {
+      // if (!this.player.body.blocked.down) {
+      //   return;
+      // }
+      console.log("test handle")
+      //if alec is on the ground, jump
+      this.player.setVelocityY(-1600);
+    }
+    
+       //if alec is in the air, can't jump again
+      // if (!this.player.body.onFloor()) {
+      //   return;
+      // }
+      
+      // if (!this.player.body.onFloor() || this.player.body.velocity.x > 0) {
+      //   return;
+      // }
+    
+    // this.input.keyboard.on('keydown_SPACE', () => {
+    // looks like the space input syntax changed since the tutorial
+    // the above doesn't work
+      
+      console.log("blocked down", this.player.body.blocked.down)
+      if (!this.player.body.blocked.down) {
         return;
       }
-      this.player.setVelocityY(-1600);
-    });
+      
   }
 
   // 60fps
@@ -89,11 +122,19 @@ export default class SinglePlayerGame extends Phaser.Scene {
     // every update the ground tile will move forward by this amt
     this.ground.tilePositionX += this.gameSpeed;
     
-    const cursors = this.input.keyboard.createCursorKeys();
-    if (cursors.up.isDown && this.player.body.touching.down) {
-      console.log("test")
-      this.player.setVelocityY(-1600); //-420 //jump height
+    
+    if(this.input.activePointer.isDown) {
+      if (!this.player.body.onFloor() || this.player.body.velocity.x > 0) { return; }
+      console.log("click")
+      this.player.setVelocityY(-1600);
     }
+    
+    
+    // const cursors = this.input.keyboard.createCursorKeys();
+    // if (cursors.up.isDown && this.player.body.touching.down) {
+    //   console.log("test")
+    //   this.player.setVelocityY(-1600); //-420 //jump height
+    // }
     
   }
   
