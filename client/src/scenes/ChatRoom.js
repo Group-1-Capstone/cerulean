@@ -1,6 +1,10 @@
 import Phaser from 'phaser';
 import { io } from 'socket.io-client';
 
+//send button function
+//input text field > update text
+//append text as child to bubble?
+
 export default class ChatRoom extends Phaser.Scene {
   constructor(name, { store, socket }) {
     super({ key: "ChatRoom" });
@@ -8,22 +12,21 @@ export default class ChatRoom extends Phaser.Scene {
     this.socket = socket;
     this.otherPlayers = {};
     this.isClicking = false;
+    this.isTalking = false;
+    this.bubble;
+    this.content;
+    this.bubbleWidth;
+    this.bubbleHeight;
+    this.input;
   }
 
   preload() {
     this.load.image('jessie', 'assets/jessieFront.png');
-    // this.load.spritesheet('jessie', 'sprites/jessie.png', {
-    //   frameWidth: 47,
-    //   frameHeight: 63,
-    // });
     this.load.image('exit', 'assets/exit.png')
+    this.load.image('star', 'assets/star.png');
   }
 
   create() {
-
-    console.log("you're in the chatroom!")
-    // console.log('store', this.store);
-    
     const exit = this.physics.add.image(700, 100, "exit");
     
     function exitTouched() {
@@ -68,13 +71,16 @@ export default class ChatRoom extends Phaser.Scene {
     });
 
     this.player.setCollideWorldBounds(true);
-    
+
+    //test speech bubble activation on button
+    const star = this.physics.add.image(400, 300, "star");
+    this.physics.add.collider(this.player, star, this.starTouched, null, this);
+    //might change the way this is set later idk
+    this.bubbleWidth = 350;
+    this.bubbleHeight = 160;
   }
 
   update() {
-    
-    //----CLICK TO TELEPORT --JANKY--------------------------------------------------------
-    //NO ANIMATIONS on purpose!! Jessie facing backwards!
     if (!this.input.activePointer.isDown && this.isClicking == true) {
       this.player.setData("newX", this.input.activePointer.x);
       this.player.setData("newY", this.input.activePointer.y);
@@ -102,27 +108,67 @@ export default class ChatRoom extends Phaser.Scene {
       this.player.x -= 5;
       this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
     }
-  
-    //-----OLD PLAYER KEYBOARD MOVEMENT ----------------------------------------------------------------
-  //   const cursors = this.input.keyboard.createCursorKeys();
-  //   if (cursors.left.isDown) {
-  //     this.player.setVelocity(-160, 0);
-  //     this.player.anims.play('left', true);
-  //   } else if (cursors.right.isDown) {
-  //     this.player.setVelocity(160, 0);
-  //     this.player.anims.play('right', true);
-  //   } else if (cursors.up.isDown) {
-  //     this.player.setVelocity(0, -160);
-  //     this.player.anims.play('up', true);
-  //   } else if (cursors.down.isDown) {
-  //     this.player.setVelocity(0, 160);
-  //     this.player.anims.play('down', true);
-  //   } else {
-  //     this.player.setVelocity(0, 0);
-  //     this.player.anims.play('turn');
-  //   }
-  // }
-  // ---------------------------------------------------------------------------------------
+    if (this.isTalking === true) {
+      this.bubble.x = (this.player.x + 5);
+      this.bubble.y = (this.player.y - 220);
+      const b = this.content.getBounds();
+      this.content.setPosition(this.bubble.x + (this.bubbleWidth / 2) - (b.width / 2), this.bubble.y + (this.bubbleHeight / 2) - (b.height / 2))
+    }
   }
 
+  starTouched(player, star) {
+    const x = player.x + 5;
+    const y = player.y - 220;
+    this.createSpeechBubble(x, y, this.bubbleWidth, this.bubbleHeight, 'Help');
+    this.isTalking = true;
+    this.time.delayedCall(5000, this.destroySpeechBubble, null, this)
+    star.destroy();
+  }
+
+  createSpeechBubble(x, y, w, h, quote) {
+    const bubblePadding = 5;
+    const arrowHeight = h/4;
+    this.bubble = this.add.graphics({x: x, y: y});
+
+    this.bubble.fillStyle(0x222222, 0.5);
+    this.bubble.fillRoundedRect(6, 6, w, h, 16);
+
+    //  Bubble color
+    this.bubble.fillStyle(0xffffff, 1);
+    //  Bubble outline line style
+    this.bubble.lineStyle(4, 0x565656, 1);
+    //  Bubble shape and outline
+    this.bubble.strokeRoundedRect(0, 0, w, h, 16);
+    this.bubble.fillRoundedRect(0, 0, w, h, 16);
+    //  Calculate arrow coordinates
+    const point1X = Math.floor(w / 7);
+    const point1Y = h;
+    const point2X = Math.floor((w / 7) * 2);
+    const point2Y = h;
+    const point3X = Math.floor(w / 7);
+    const point3Y = Math.floor(h + arrowHeight);
+    //  Bubble arrow shadow
+    this.bubble.lineStyle(4, 0x222222, 0.5);
+    this.bubble.lineBetween(point2X - 1, point2Y + 6, point3X + 2, point3Y);
+    //  Bubble arrow fill
+    this.bubble.fillTriangle(point1X, point1Y, point2X, point2Y, point3X, point3Y);
+    this.bubble.lineStyle(2, 0x565656, 1);
+    this.bubble.lineBetween(point2X, point2Y, point3X, point3Y);
+    this.bubble.lineBetween(point1X, point1Y, point3X, point3Y);
+
+    this.content = this.add.text(0, 0, quote, { fontFamily: 'Arial', fontSize: 20, color: '#000000', align: 'center', wordWrap: { width: w - (bubblePadding * 2) } });
+
+    const b = this.content.getBounds();
+
+    this.content.setPosition(this.bubble.x + (w / 2) - (b.width / 2), this.bubble.y + (h / 2) - (b.height / 2))
+  }
+
+  //destroy current bubble, re-activate button. may switch to setEnabled()/disableEnabled() ?
+  destroySpeechBubble() {
+    this.isTalking = false;
+    this.bubble.destroy();
+    this.content.destroy();
+    const star = this.physics.add.image(400, 300, "star");
+    this.physics.add.collider(this.player, star, this.starTouched, null, this);
+  }
 }

@@ -5,12 +5,16 @@ export default class SinglePlayerGame extends Phaser.Scene {
     super({ key: 'GameRoom' });
     this.socket = socket;
     this.player = {};
+    this.cloudsWhite;
+    this.cloudsWhiteSmall;
   }
 
   preload() {
     this.load.image('ground', 'assets/dino/ground.png');
     this.load.image('restart', 'assets/dino/restart.png');
     this.load.image('game-over', 'assets/dino/game-over.png');
+    this.load.image('clouds-white', 'assets/clouds-white.png');
+    this.load.image('clouds-white-small', 'assets/clouds-white-small.png');
     this.load.atlas(
       'characterAtlas',
       'assets/dino/spritesheetalec.png',
@@ -19,6 +23,8 @@ export default class SinglePlayerGame extends Phaser.Scene {
   }
 
   create() {
+    const div = document.getElementById('gameContainer');
+    div.style.backgroundColor = '#5DACD8';
     // canvas height and width
     const { height, width } = this.game.config;
     /* var image = scene.add.tileSprite(x, y, width, height, textureKey); */
@@ -30,6 +36,9 @@ export default class SinglePlayerGame extends Phaser.Scene {
       .setOrigin(0, 1);
 
     console.log('this.ground', this.ground);
+
+    this.cloudsWhite = this.add.tileSprite(400, 260, 800, 420, 'clouds-white');
+    this.cloudsWhiteSmall = this.add.tileSprite(400, 260, 800, 415, 'clouds-white-small');
 
     this.anims.create({
       key: 'run',
@@ -70,6 +79,8 @@ export default class SinglePlayerGame extends Phaser.Scene {
 
   // 60fps
   update() {
+    this.cloudsWhite.tilePositionX += 0.5;
+    this.cloudsWhiteSmall.tilePositionX += 0.25;
     // every update the ground tile will move forward by this amt
     this.ground.tilePositionX += this.gameSpeed;
   }
