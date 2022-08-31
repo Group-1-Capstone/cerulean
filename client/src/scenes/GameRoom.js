@@ -52,8 +52,14 @@ export default class SinglePlayerGame extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setGravityY(5000)
       .play('run');
+      
+    
 
-    this.physics.add.collider(player, this.ground);
+    this.physics.add.collider(this.player, this.ground);
+    
+    console.log("player", this.player)
+    console.log("touching", this.player.body.touching.down)
+    console.log("onFloor", this.player.body.onFloor())
   }
 
   /* this.input.pointer //(property) globalThis.Phaser.Input.InputPlugin.pointer1: Phaser.Input.Pointer
@@ -71,5 +77,13 @@ export default class SinglePlayerGame extends Phaser.Scene {
   update() {
     // every update the ground tile will move forward by this amt
     this.ground.tilePositionX += this.gameSpeed;
+    
+    const cursors = this.input.keyboard.createCursorKeys();
+    if (cursors.up.isDown && this.player.body.touching.down) {
+      console.log("test")
+      this.player.setVelocityY(-1600); //-420 //jump height
+    }
+    
   }
+  
 }
