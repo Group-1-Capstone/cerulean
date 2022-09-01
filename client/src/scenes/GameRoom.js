@@ -19,6 +19,8 @@ export default class GameRoom extends Phaser.Scene {
       'assets/dino/spritesheetalec.png',
       'assets/dino/spritesheetalec.json'
     );
+    this.load.image('exitButton', 'assets/button.png');
+    this.load.image('restartButton', 'assets/bomb.png');
     // this.load.image('rock', 'assets/dino/disk-1.png' )
     this.load.image('rock', 'assets/dino/rock.png' )
   }
@@ -85,6 +87,31 @@ export default class GameRoom extends Phaser.Scene {
     
     this.score = 0
     
+    const exitButton = this.add.image(50, 50, "exitButton")
+    .setInteractive()
+    .setScale(.2)
+    .setDepth(1);
+
+    const restartButton = this.add.image(120, 50, "restartButton")
+    .setInteractive()
+    .setScale(3)
+    .setDepth(1);
+
+    exitButton.on(
+      'pointerup',
+      function () {
+        this.scene.start('MainRoom');
+      },
+      this
+    );
+
+    restartButton.on(
+      'pointerup',
+      function () {
+        this.scene.restart();
+      },
+      this
+    );
     //end of create func
   }
 
