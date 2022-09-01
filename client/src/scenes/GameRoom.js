@@ -6,6 +6,7 @@ export default class GameRoom extends Phaser.Scene {
     this.socket = socket;
     this.cloudsWhite;
     this.cloudsWhiteSmall;
+    this.gameOver = false;
   }
 
   preload() {
@@ -71,11 +72,16 @@ export default class GameRoom extends Phaser.Scene {
           fontSize: "64px",
           fill: "#EE3D73",  //font color
         });
-        
+        this.gameOver = true;
+        this.player.anims.stop();
       //TODO: make everything stop, not just alec
       //he only stops if he's in the air, he keeps walking after colliding
-      this.physics.pause();
-      this.player.anims.stop();
+      //this.physics.pause();
+        
+      // this.player.anims.stop();
+      // this.cloudsWhite.anims.stop();
+      // this.cloudsWhiteSmall.anims.stop();
+
       // this.isGameRunning = false;
       // this.anims.pauseAll();
       // this.respawnTime = 0;
@@ -100,6 +106,7 @@ export default class GameRoom extends Phaser.Scene {
     exitButton.on(
       'pointerup',
       function () {
+        this.gameOver = false;
         this.scene.start('MainRoom');
       },
       this
@@ -108,6 +115,7 @@ export default class GameRoom extends Phaser.Scene {
     restartButton.on(
       'pointerup',
       function () {
+        this.gameOver = false;
         this.scene.restart();
       },
       this
@@ -156,40 +164,39 @@ export default class GameRoom extends Phaser.Scene {
   update(time, delta) {
     //see if we need time param - yes, but why?
     //delta is the time from the last frame
-    
-    this.cloudsWhite.tilePositionX += 0.25;
-    this.cloudsWhiteSmall.tilePositionX += 0.5;
-    
-    // every update the ground tile will move forward by this amt
-    this.ground.tilePositionX += this.gameSpeed;
-    
-    Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
-    // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
-    
-    this.respawnTime += delta * this.gameSpeed * 0.08;
-    // this.gameSpeed += 0.01
-    
-    if (this.respawnTime >= 1500) {
-      //1500 ms
-      this.placeObsticle();
-      this.respawnTime = 0;
-    }
-    
-    if(this.input.activePointer.isDown) {
-      if (!this.player.body.onFloor()) {
-        return;
+    if (this.gameOver !== true) {
+      this.cloudsWhite.tilePositionX += 0.25;
+      this.cloudsWhiteSmall.tilePositionX += 0.5;
+      
+      // every update the ground tile will move forward by this amt
+      this.ground.tilePositionX += this.gameSpeed;
+      
+      Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
+      // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
+      
+      this.respawnTime += delta * this.gameSpeed * 0.08;
+      // this.gameSpeed += 0.01
+      
+      if (this.respawnTime >= 1500) {
+        //1500 ms
+        this.placeObsticle();
+        this.respawnTime = 0;
       }
-      this.player.setVelocityY(-1600); //-1600
+      
+      if(this.input.activePointer.isDown) {
+        if (!this.player.body.onFloor()) {
+          return;
+        }
+        this.player.setVelocityY(-1600); //-1600
+      }
+      
+      if (this.player.body.deltaAbsY() > 0) {
+          //while in air
+        this.player.anims.stop();
+        //this.player.setFrame('alec8');
+      } else {
+        this.player.play('run', true);
+      }
     }
-    
-    if (this.player.body.deltaAbsY() > 0) {
-        //while in air
-      this.player.anims.stop();
-      this.player.setFrame('alec8');
-    } else {
-      this.player.play('run', true);
-    }
-    
   }
-  
 }
