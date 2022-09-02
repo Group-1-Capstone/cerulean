@@ -188,6 +188,7 @@ export default class GameRoom extends Phaser.Scene {
 
       // every update the ground tile will move forward by this amt
       this.ground.tilePositionX += this.gameSpeed;
+      console.log('tileX', this.ground.tilePositionX);
 
       Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
       // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
@@ -211,7 +212,7 @@ export default class GameRoom extends Phaser.Scene {
       if (this.player.body.deltaAbsY() > 0) {
         //while in air
         this.player.anims.stop();
-        //this.player.setFrame('alec8');
+        this.player.setFrame('alec8');
       } else {
         this.player.play('run', true);
       }
