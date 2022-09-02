@@ -23,7 +23,6 @@ export default class GameRoom extends Phaser.Scene {
     );
     this.load.image('exitButton', 'assets/button.png');
     this.load.image('restartButton', 'assets/bomb.png');
-    // this.load.image('rock', 'assets/dino/disk-1.png' )
     this.load.image('rock', 'assets/dino/rock.png');
   }
 
