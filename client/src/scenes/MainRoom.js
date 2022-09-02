@@ -36,8 +36,8 @@ export default class MainRoom extends Phaser.Scene {
     // console.log('store', this.store);
     this.add.image(400, 300, 'room');
 
-    const x = 100;
-    const y = 300;
+    const x = 463;
+    const y = 458;
     this.player = this.physics.add.sprite(x, y, 'jessie');
 
     const gameDoor = this.physics.add.image(250, 100, 'gameDoor');
@@ -96,8 +96,8 @@ export default class MainRoom extends Phaser.Scene {
         intensity: 0.0,
         ease: 'Linear',
         duration: 0,
-        repeat: -1
-    });
+        repeat: -1,
+      });
 
       this.add.image(400, 300, 'journal');
       const promptText = this.add.text(200, 250, 'How are you feeling?', {
@@ -133,7 +133,7 @@ export default class MainRoom extends Phaser.Scene {
       gameRoomButton.on(
         'pointerup',
         () => {
-          this.scene.start("GameRoom");
+          this.scene.start('GameRoom');
         },
         this
       );
@@ -150,10 +150,15 @@ export default class MainRoom extends Phaser.Scene {
       );
     }
 
-    const journalText = this.add.text(150, 550, 'Walk over to the star/journal', {
-      fontSize: '32px',
-      fill: '#EE3D73', // font color
-    });
+    const journalText = this.add.text(
+      150,
+      550,
+      'Walk over to the star/journal',
+      {
+        fontSize: '32px',
+        fill: '#EE3D73', // font color
+      }
+    );
 
     this.player.setCollideWorldBounds(true);
   }

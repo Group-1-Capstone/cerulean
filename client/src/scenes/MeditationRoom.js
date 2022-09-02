@@ -3,10 +3,10 @@ import Phaser from 'phaser';
 
 export default class MeditationRoom extends Phaser.Scene {
   constructor(name, { store, socket }) {
-    super({ key: "MeditationRoom" });
+    super({ key: 'MeditationRoom' });
     //why do we have "name" in constructor and super?
     // this.store = store,
-    this.socket = socket
+    this.socket = socket;
   }
 
   preload() {
@@ -14,7 +14,10 @@ export default class MeditationRoom extends Phaser.Scene {
     this.load.image('exit', 'assets/exit.png');
     this.load.image('start', 'assets/button.png');
     this.load.audio('music', 'assets/relaxing.mp3');
-    this.load.spritesheet('breathingAnim', 'assets/breathe2.png', {frameWidth: 600, frameHeight: 628});
+    this.load.spritesheet('breathingAnim', 'assets/breathe2.png', {
+      frameWidth: 600,
+      frameHeight: 628,
+    });
   }
 
   create() {
@@ -22,7 +25,8 @@ export default class MeditationRoom extends Phaser.Scene {
       key: 'breath',
       frames: this.anims.generateFrameNumbers('breathingAnim'),
       frameRate: 12,
-      repeat: -1});
+      repeat: -1,
+    });
     const sprite = this.add.sprite(400, 300, 'breathingAnim');
     sprite.setDepth(1);
 
@@ -31,15 +35,13 @@ export default class MeditationRoom extends Phaser.Scene {
     const music = this.sound.add('music');
     music.play();
 
-    const exitButton = this.add
-    .image(100, 450, 'exit')
-    .setInteractive();
+    const exitButton = this.add.image(50, 450, 'exit').setInteractive();
 
     const startButton = this.add
-    .image(400, 300, 'start')
-    .setInteractive()
-    .setScale(.5)
-    .setDepth(2);
+      .image(400, 300, 'start')
+      .setInteractive()
+      .setScale(0.5)
+      .setDepth(2);
 
     exitButton.on(
       'pointerup',
@@ -53,15 +55,12 @@ export default class MeditationRoom extends Phaser.Scene {
     startButton.on(
       'pointerup',
       function () {
-        sprite.play({key: 'breath'});
+        sprite.play({ key: 'breath' });
         startButton.destroy();
       },
       this
     );
-
   }
 
-  update() {
-
-  }
+  update() {}
 }
