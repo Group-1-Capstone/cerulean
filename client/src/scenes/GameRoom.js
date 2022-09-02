@@ -170,7 +170,7 @@ export default class GameRoom extends Phaser.Scene {
     if (this.player.body.deltaAbsY() > 0) {
       //while in air
       this.player.anims.stop();
-      this.player.setTexture('characterAtlas', 'alec8');
+      this.player.setFrame('alec8');
     } else {
       this.player.play('run', true);
     }
