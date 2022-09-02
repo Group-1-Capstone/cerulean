@@ -144,37 +144,36 @@ export default class GameRoom extends Phaser.Scene {
     this.score++;
     this.scoreText.setText(`Score: ${this.score}`);
 
-      this.cloudsWhite.tilePositionX += 0.25;
-      this.cloudsWhiteSmall.tilePositionX += 0.5;
+    this.cloudsWhite.tilePositionX += 0.25;
+    this.cloudsWhiteSmall.tilePositionX += 0.5;
 
-      // every update the ground tile will move forward by this amt
-      this.ground.tilePositionX += this.gameSpeed;
+    // every update the ground tile will move forward by this amt
+    this.ground.tilePositionX += this.gameSpeed;
 
-      Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
-      // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
+    Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
+    // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
 
-      this.respawnTime += delta * this.gameSpeed * 0.08;
-      // this.gameSpeed += 0.01
+    this.respawnTime += delta * this.gameSpeed * 0.08;
+    // this.gameSpeed += 0.01
 
-      if (this.respawnTime >= 1500) {
-        this.placeObsticle();
-        this.respawnTime = 0;
+    if (this.respawnTime >= 1500) {
+      this.placeObsticle();
+      this.respawnTime = 0;
+    }
+
+    if (this.input.activePointer.isDown) {
+      if (!this.player.body.onFloor()) {
+        return;
       }
+      this.player.setVelocityY(-1600);
+    }
 
-      if (this.input.activePointer.isDown) {
-        if (!this.player.body.onFloor()) {
-          return;
-        }
-        this.player.setVelocityY(-1600);
-      }
-
-      if (this.player.body.deltaAbsY() > 0) {
-        //while in air
-        this.player.anims.stop();
-        this.player.setFrame('alec8');
-      } else {
-        this.player.play('run', true);
-      }
+    if (this.player.body.deltaAbsY() > 0) {
+      //while in air
+      this.player.anims.stop();
+      this.player.setTexture('characterAtlas', 'alec8');
+    } else {
+      this.player.play('run', true);
     }
   }
 }
