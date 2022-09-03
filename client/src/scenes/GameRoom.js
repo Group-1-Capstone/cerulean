@@ -110,11 +110,62 @@ export default class GameRoom extends Phaser.Scene {
       },
       this
     );
+
     this.score = 0;
     this.scoreText = this.add.text(500, 400, `Score: ${this.score}`, {
       fontSize: '24px',
       fill: '#BFF0D4',
     });
+
+    // function updateMessage() {
+    //   if (this.score === 100) {
+    //     console.log('score 100');
+    //     this.messageText = this.add.text(400, 200, 'You are the best', {
+    //       fontSize: '24px',
+    //       fill: '#BFF0D4',
+    //     });
+    //   }
+    // }
+    this.messageIndex = 0;
+  }
+
+  updateMessage() {
+    // let messageIndex = 0; //this is resetting the index every time...want this as a global variable closure?
+    const messages = [
+      'talented',
+      'brilliant',
+      'incredible',
+      'amazing',
+      'show stopping',
+      'spectacular',
+      'totally unique',
+    ];
+    //unstoppable, you can do anything, you can overcome any obstacle
+
+    console.log('update invoked');
+
+    if (this.messageIndex === 0) {
+      console.log('first text');
+      this.messageText = this.add.text(
+        300,
+        25,
+        `You are ${messages[this.messageIndex]}`,
+        {
+          fontSize: '24px',
+          fill: '#EE3D73',
+        }
+      );
+    }
+    if (0 < this.messageIndex < messages.length - 1) {
+      console.log('change message');
+      console.log('msgtext', messages[this.messageIndex]);
+      this.messageText.setText(`You are ${messages[this.messageIndex]}`);
+    }
+    if (this.messageIndex < 6) {
+      console.log('msgindx', this.messageIndex);
+      //only have 6 words so don't want the message to be an undefined index
+      this.messageIndex++;
+    }
   }
 
   placeObsticle() {
@@ -142,6 +193,12 @@ export default class GameRoom extends Phaser.Scene {
     }
     this.score++;
     this.scoreText.setText(`Score: ${this.score}`);
+
+    if (this.score % 100 === 0) {
+      //stop invoking it when we run out of messages to display
+      //if score % 100 === 0 && score < num that gives the last message -> updateMsg
+      this.updateMessage();
+    }
 
     this.cloudsWhite.tilePositionX += 0.25;
     this.cloudsWhiteSmall.tilePositionX += 0.5;
