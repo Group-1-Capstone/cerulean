@@ -2,10 +2,9 @@ import Phaser from 'phaser';
 import { io } from 'socket.io-client';
 
 export default class ChatRoom extends Phaser.Scene {
-  constructor(name, { store, socket }) {
+  constructor(name, { store }) {
     super({ key: 'ChatRoom' });
     // this.store = store,
-    this.socket = socket;
     this.otherPlayers = {};
     this.speechBubbles = {};
     this.speechBubble = {};
@@ -23,6 +22,8 @@ export default class ChatRoom extends Phaser.Scene {
   }
 
   create() {
+    this.socket = io.connect();
+
     const sceneFrame = this.add.rectangle(400, 300, 800, 600);
     sceneFrame.setDepth(0);
     const chatZone = this.add.rectangle(50, 550, 400, 100);
@@ -41,6 +42,7 @@ export default class ChatRoom extends Phaser.Scene {
 
     function exitTouched() {
       console.log('touched exit func');
+      this.socket.disconnect();
       this.scene.start('MainRoom');
     }
 
