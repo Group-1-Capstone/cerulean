@@ -85,7 +85,6 @@ export default class ChatRoom extends Phaser.Scene {
       const player = this.otherPlayers[data.id];
       player.destroy();
       console.log(`player ${data.id} left the game`);
-      delete this.otherPlayers[data.id];
     });
 
     this.socket.on('playerMoved', (data) => {
