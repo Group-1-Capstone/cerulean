@@ -23,7 +23,15 @@ export default class GameRoom extends Phaser.Scene {
     );
     this.load.image('exitButton', 'assets/button.png');
     this.load.image('restartButton', 'assets/bomb.png');
-    this.load.image('rock', 'assets/dino/rock.png');
+    // this.load.image('rock', 'assets/dino/rock.png');
+    this.load.image('rock', 'assets/dino/rockTrans.png');
+    this.load.image('bush', 'assets/dino/bush.png');
+    this.load.image('cactus', 'assets/dino/cactus2.png');
+    this.load.image('disk', 'assets/dino/diskBig.png');
+    this.load.image('wideRock', 'assets/dino/wideRock.png');
+    this.load.image('duck', 'assets/dino/kaczuha 1.png');
+    this.load.image('pizza', 'assets/dino/pizzaslice.png');
+    this.load.image('error', 'assets/dino/serverError2.png');
   }
 
   create() {
@@ -142,7 +150,7 @@ export default class GameRoom extends Phaser.Scene {
     ];
     //unstoppable, you can do anything, you can overcome any obstacle
 
-    console.log('update invoked');
+    // console.log('update invoked');
 
     if (this.messageIndex === 0) {
       console.log('first text');
@@ -157,12 +165,12 @@ export default class GameRoom extends Phaser.Scene {
       );
     }
     if (0 < this.messageIndex < messages.length - 1) {
-      console.log('change message');
-      console.log('msgtext', messages[this.messageIndex]);
+      // console.log('change message');
+      // console.log('msgtext', messages[this.messageIndex]);
       this.messageText.setText(`You are ${messages[this.messageIndex]}`);
     }
     if (this.messageIndex < 6) {
-      console.log('msgindx', this.messageIndex);
+      // console.log('msgindx', this.messageIndex);
       //only have 6 words so don't want the message to be an undefined index
       this.messageIndex++;
     }
@@ -170,19 +178,46 @@ export default class GameRoom extends Phaser.Scene {
 
   placeObsticle() {
     const distance = Phaser.Math.Between(600, 900);
+    const obstacleNum = Math.floor(Math.random() * 6);
+    console.log('obsNum', obstacleNum);
 
     let obsticle;
 
-    obsticle = this.obsticles
-      .create(
-        this.game.config.width + distance,
-        this.game.config.height,
-        'rock'
-      )
-      .setScale(0.5)
-      .setOrigin(0, 1);
+    const obstaclesArr = [
+      'rock',
+      'bush',
+      'cactus',
+      'error',
+      'wideRock',
+      'disk',
+    ]; //index 0 to 5
 
-    obsticle.body.offset.y = +10;
+    //missing duck, pizza
+
+    console.log('creating a ', obstaclesArr[obstacleNum]);
+
+    if (
+      obstaclesArr[obstacleNum] === 'bush' ||
+      obstaclesArr[obstacleNum] === 'wideRock' ||
+      obstaclesArr[obstacleNum] === 'rock'
+    ) {
+      obsticle = this.obsticles.create(
+        this.game.config.width + distance,
+        this.game.config.height - 65, //- 80
+        `${obstaclesArr[obstacleNum]}` //obstaclesArr[RNG from 0 to length]
+      );
+    } else {
+      obsticle = this.obsticles.create(
+        this.game.config.width + distance,
+        this.game.config.height - 80, //- 80
+        `${obstaclesArr[obstacleNum]}` //obstaclesArr[RNG from 0 to length]
+      );
+    }
+
+    // .setScale(0.5)
+    // .setOrigin(0, 1);
+
+    // obsticle.body.offset.y = +10; //+10 shifts the hitbox? do we want this at all?
 
     obsticle.setImmovable();
   }
