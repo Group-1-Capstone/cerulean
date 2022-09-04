@@ -78,7 +78,7 @@ export default class GameRoom extends Phaser.Scene {
       this.player,
       this.obsticles,
       () => {
-        const gameOverText = this.add.text(400, 300, 'The End', {
+        const gameOverText = this.add.text(300, 400, 'The End', {
           fontSize: '64px',
           fill: '#EE3D73', //font color
         });
@@ -120,20 +120,11 @@ export default class GameRoom extends Phaser.Scene {
     );
 
     this.score = 0;
-    this.scoreText = this.add.text(500, 400, `Score: ${this.score}`, {
+    this.scoreText = this.add.text(575, 30, `Score: ${this.score}`, {
       fontSize: '24px',
       fill: '#BFF0D4',
     });
 
-    // function updateMessage() {
-    //   if (this.score === 100) {
-    //     console.log('score 100');
-    //     this.messageText = this.add.text(400, 200, 'You are the best', {
-    //       fontSize: '24px',
-    //       fill: '#BFF0D4',
-    //     });
-    //   }
-    // }
     this.messageIndex = 0;
   }
 
@@ -155,11 +146,11 @@ export default class GameRoom extends Phaser.Scene {
     if (this.messageIndex === 0) {
       console.log('first text');
       this.messageText = this.add.text(
+        250,
         300,
-        25,
         `You are ${messages[this.messageIndex]}`,
         {
-          fontSize: '24px',
+          fontSize: '36px', //make sure longer words fit on screen
           fill: '#EE3D73',
         }
       );
@@ -229,7 +220,7 @@ export default class GameRoom extends Phaser.Scene {
     this.score++;
     this.scoreText.setText(`Score: ${this.score}`);
 
-    if (this.score % 100 === 0) {
+    if (this.score % 300 === 0) {
       //stop invoking it when we run out of messages to display
       //if score % 100 === 0 && score < num that gives the last message -> updateMsg
       this.updateMessage();
@@ -245,7 +236,8 @@ export default class GameRoom extends Phaser.Scene {
     // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
 
     this.respawnTime += delta * this.gameSpeed * 0.08;
-    // this.gameSpeed += 0.01
+    // this.gameSpeed += 0.01;
+    this.gameSpeed += 0.003;
 
     if (this.respawnTime >= 1500) {
       this.placeObsticle();
