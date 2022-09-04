@@ -41,7 +41,6 @@ export default class ChatRoom extends Phaser.Scene {
     const exit = this.physics.add.image(700, 100, 'exit');
 
     function exitTouched() {
-      console.log('touched exit func');
       this.socket.disconnect();
       this.scene.start('MainRoom');
     }
@@ -63,8 +62,6 @@ export default class ChatRoom extends Phaser.Scene {
 
     // the server telling me all the existing players and their locations
     this.socket.on('allPlayers', (allPlayers) => {
-      console.log('got all players from server', allPlayers);
-
       Object.keys(allPlayers).forEach((socketID) => {
         let player = this.physics.add.sprite(
           allPlayers[socketID].x,
@@ -76,7 +73,6 @@ export default class ChatRoom extends Phaser.Scene {
     });
 
     this.socket.on('messageSent', ({ message, id }) => {
-      console.log('message received from server', message, 'by', id);
       this.speechBubbles[id] = this.speechBubbles[id] || {};
       this.speechBubbles[id] = this.sendMessage(message, id);
     });
@@ -84,7 +80,6 @@ export default class ChatRoom extends Phaser.Scene {
     this.socket.on('removePlayer', (data) => {
       const player = this.otherPlayers[data.id];
       player.destroy();
-      console.log(`player ${data.id} left the game`);
     });
 
     this.socket.on('playerMoved', (data) => {
@@ -107,7 +102,7 @@ export default class ChatRoom extends Phaser.Scene {
         if (event.target.name === 'sendButton') {
           const element = inputField.getChildByName('textField');
           this.inputText = element.value;
-          if (this.inputText !== '') {
+          if (this.inputText !== '' && this.inputText.length < 250) {
             this.speechBubble = this.sendMessage(this.inputText);
             element.value = '';
             this.socket.emit('messageSent', this.inputText);
