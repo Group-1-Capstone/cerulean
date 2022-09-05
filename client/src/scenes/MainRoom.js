@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 
 export default class MainRoom extends Phaser.Scene {
-  constructor() {
-    super('MainRoom');
+  constructor(name, { store }) {
+    super({ key: 'MainRoom' });
+    // this.store = store,
     this.isClicking = false;
   }
 
@@ -15,10 +16,6 @@ export default class MainRoom extends Phaser.Scene {
     this.load.image('room', 'assets/mainroom.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('jessie', 'assets/jessieFront.png');
-    // this.load.spritesheet('jessie', 'sprites/jessie.png', {
-    //   frameWidth: 47,
-    //   frameHeight: 63,
-    // });
     this.load.image('journal', 'assets/journal.png');
     this.load.image('chatDoor', 'assets/chatDoor.png');
     this.load.image('gameDoor', 'assets/gameDoor.png');

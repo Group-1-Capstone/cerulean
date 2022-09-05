@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 export default class MeditationRoom extends Phaser.Scene {
   constructor() {
-    super('MeditationRoom');
+    super({ key: 'MeditationRoom' });
   }
 
   preload() {
