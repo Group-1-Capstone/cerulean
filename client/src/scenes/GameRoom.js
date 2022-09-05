@@ -32,12 +32,22 @@ export default class GameRoom extends Phaser.Scene {
     this.load.image('duck', 'assets/dino/kaczuha 1.png');
     this.load.image('pizza', 'assets/dino/pizzaslice.png');
     this.load.image('error', 'assets/dino/serverError2.png');
+
+    this.load.audio('runningSound', 'assets/dino/footstep_concrete_003.ogg');
+    this.load.audio('exitSound', 'assets/doorClose_1.ogg');
+    this.load.audio('playAgainSound', 'assets/dino/jingles_HIT01.ogg');
   }
 
   create() {
     const div = document.getElementById('gameContainer');
     this.add.image(400, 300, 'sky');
     const { height, width } = this.game.config;
+
+    this.runningSound = this.sound.add('runningSound', { loop: true });
+    this.runningSound.play();
+
+    this.exitSound = this.sound.add('exitSound');
+    this.playAgainSound = this.sound.add('playAgainSound');
 
     this.gameSpeed = 10;
     this.ground = this.add
@@ -78,6 +88,7 @@ export default class GameRoom extends Phaser.Scene {
       this.player,
       this.obsticles,
       () => {
+        this.runningSound.pause();
         const gameOverText = this.add.text(300, 400, 'The End', {
           fontSize: '64px',
           fill: '#EE3D73', //font color
@@ -104,6 +115,8 @@ export default class GameRoom extends Phaser.Scene {
     exitButton.on(
       'pointerup',
       function () {
+        this.runningSound.destroy();
+        this.exitSound.play();
         this.gameOver = false;
         this.scene.start('MainRoom');
       },
@@ -113,6 +126,8 @@ export default class GameRoom extends Phaser.Scene {
     restartButton.on(
       'pointerup',
       function () {
+        this.runningSound.destroy();
+        this.playAgainSound.play();
         this.gameOver = false;
         this.scene.restart();
       },
@@ -255,8 +270,10 @@ export default class GameRoom extends Phaser.Scene {
       //while in air
       this.player.anims.stop();
       this.player.setFrame('alec8');
+      this.runningSound.pause();
     } else {
       this.player.play('run', true);
+      this.runningSound.resume();
     }
   }
 }
