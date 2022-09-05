@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export default class GameRoom extends Phaser.Scene {
-  constructor({}) {
+  constructor() {
     super({ key: 'GameRoom' });
 
     this.cloudsWhite;
@@ -23,15 +23,13 @@ export default class GameRoom extends Phaser.Scene {
     );
     this.load.image('exitButton', 'assets/button.png');
     this.load.image('restartButton', 'assets/bomb.png');
-    // this.load.image('rock', 'assets/dino/rock.png');
-    this.load.image('rock', 'assets/dino/rockTrans.png');
+
+    this.load.image('rock', 'assets/dino/rock.png');
     this.load.image('bush', 'assets/dino/bush.png');
-    this.load.image('cactus', 'assets/dino/cactus2.png');
+    this.load.image('cactus', 'assets/dino/cactus.png');
     this.load.image('disk', 'assets/dino/diskBig.png');
     this.load.image('wideRock', 'assets/dino/wideRock.png');
-    this.load.image('duck', 'assets/dino/kaczuha 1.png');
-    this.load.image('pizza', 'assets/dino/pizzaslice.png');
-    this.load.image('error', 'assets/dino/serverError2.png');
+    this.load.image('error', 'assets/dino/serverError.png');
 
     this.load.audio('runningSound', 'assets/dino/footstep_concrete_003.ogg');
     this.load.audio('exitSound', 'assets/doorClose_1.ogg');
@@ -135,8 +133,8 @@ export default class GameRoom extends Phaser.Scene {
     );
 
     this.score = 0;
-    this.scoreText = this.add.text(575, 30, `Score: ${this.score}`, {
-      fontSize: '24px',
+    this.scoreText = this.add.text(500, 30, `Score: ${this.score}`, {
+      fontSize: '36px',
       fill: '#BFF0D4',
     });
 
@@ -144,7 +142,6 @@ export default class GameRoom extends Phaser.Scene {
   }
 
   updateMessage() {
-    // let messageIndex = 0; //this is resetting the index every time...want this as a global variable closure?
     const messages = [
       'talented',
       'brilliant',
@@ -154,9 +151,6 @@ export default class GameRoom extends Phaser.Scene {
       'spectacular',
       'totally unique',
     ];
-    //unstoppable, you can do anything, you can overcome any obstacle
-
-    // console.log('update invoked');
 
     if (this.messageIndex === 0) {
       console.log('first text');
@@ -167,17 +161,20 @@ export default class GameRoom extends Phaser.Scene {
         {
           fontSize: '36px', //make sure longer words fit on screen
           fill: '#EE3D73',
+          fontStyle: 'bold',
         }
       );
     }
+
     if (0 < this.messageIndex < messages.length - 1) {
-      // console.log('change message');
-      // console.log('msgtext', messages[this.messageIndex]);
       this.messageText.setText(`You are ${messages[this.messageIndex]}`);
     }
-    if (this.messageIndex < 6) {
-      // console.log('msgindx', this.messageIndex);
-      //only have 6 words so don't want the message to be an undefined index
+
+    if (this.messageIndex === 7) {
+      this.messageText.setText('You can overcome any obstacle!');
+    }
+
+    if (this.messageIndex < 7) {
       this.messageIndex++;
     }
   }
@@ -185,7 +182,6 @@ export default class GameRoom extends Phaser.Scene {
   placeObsticle() {
     const distance = Phaser.Math.Between(600, 900);
     const obstacleNum = Math.floor(Math.random() * 6);
-    console.log('obsNum', obstacleNum);
 
     let obsticle;
 
@@ -196,11 +192,7 @@ export default class GameRoom extends Phaser.Scene {
       'error',
       'wideRock',
       'disk',
-    ]; //index 0 to 5
-
-    //missing duck, pizza
-
-    console.log('creating a ', obstaclesArr[obstacleNum]);
+    ];
 
     if (
       obstaclesArr[obstacleNum] === 'bush' ||
@@ -209,21 +201,16 @@ export default class GameRoom extends Phaser.Scene {
     ) {
       obsticle = this.obsticles.create(
         this.game.config.width + distance,
-        this.game.config.height - 65, //- 80
-        `${obstaclesArr[obstacleNum]}` //obstaclesArr[RNG from 0 to length]
+        this.game.config.height - 65,
+        `${obstaclesArr[obstacleNum]}`
       );
     } else {
       obsticle = this.obsticles.create(
         this.game.config.width + distance,
-        this.game.config.height - 80, //- 80
-        `${obstaclesArr[obstacleNum]}` //obstaclesArr[RNG from 0 to length]
+        this.game.config.height - 80,
+        `${obstaclesArr[obstacleNum]}`
       );
     }
-
-    // .setScale(0.5)
-    // .setOrigin(0, 1);
-
-    // obsticle.body.offset.y = +10; //+10 shifts the hitbox? do we want this at all?
 
     obsticle.setImmovable();
   }
@@ -235,9 +222,7 @@ export default class GameRoom extends Phaser.Scene {
     this.score++;
     this.scoreText.setText(`Score: ${this.score}`);
 
-    if (this.score % 300 === 0) {
-      //stop invoking it when we run out of messages to display
-      //if score % 100 === 0 && score < num that gives the last message -> updateMsg
+    if (this.score % 300 === 0 && this.score <= 2400) {
       this.updateMessage();
     }
 
