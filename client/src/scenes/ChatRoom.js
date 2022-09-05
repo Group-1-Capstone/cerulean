@@ -2,10 +2,9 @@ import Phaser from 'phaser';
 import { io } from 'socket.io-client';
 
 export default class ChatRoom extends Phaser.Scene {
-  constructor(name, { store, socket }) {
+  constructor(name, { store }) {
     super({ key: 'ChatRoom' });
     // this.store = store,
-    this.socket = socket;
     this.otherPlayers = {};
     this.speechBubbles = {};
     this.speechBubble = {};
@@ -23,6 +22,8 @@ export default class ChatRoom extends Phaser.Scene {
   }
 
   create() {
+    this.socket = io.connect();
+
     const sceneFrame = this.add.rectangle(400, 300, 800, 600);
     sceneFrame.setDepth(0);
     const chatZone = this.add.rectangle(50, 550, 400, 100);
@@ -40,7 +41,7 @@ export default class ChatRoom extends Phaser.Scene {
     const exit = this.physics.add.image(700, 100, 'exit');
 
     function exitTouched() {
-      console.log('touched exit func');
+      this.socket.disconnect();
       this.scene.start('MainRoom');
     }
 
@@ -61,8 +62,6 @@ export default class ChatRoom extends Phaser.Scene {
 
     // the server telling me all the existing players and their locations
     this.socket.on('allPlayers', (allPlayers) => {
-      console.log('got all players from server', allPlayers);
-
       Object.keys(allPlayers).forEach((socketID) => {
         let player = this.physics.add.sprite(
           allPlayers[socketID].x,
@@ -74,7 +73,6 @@ export default class ChatRoom extends Phaser.Scene {
     });
 
     this.socket.on('messageSent', ({ message, id }) => {
-      console.log('message received from server', message, 'by', id);
       this.speechBubbles[id] = this.speechBubbles[id] || {};
       this.speechBubbles[id] = this.sendMessage(message, id);
     });
@@ -82,8 +80,6 @@ export default class ChatRoom extends Phaser.Scene {
     this.socket.on('removePlayer', (data) => {
       const player = this.otherPlayers[data.id];
       player.destroy();
-      console.log(`player ${data.id} left the game`);
-      delete this.otherPlayers[data.id];
     });
 
     this.socket.on('playerMoved', (data) => {
@@ -106,7 +102,7 @@ export default class ChatRoom extends Phaser.Scene {
         if (event.target.name === 'sendButton') {
           const element = inputField.getChildByName('textField');
           this.inputText = element.value;
-          if (this.inputText !== '') {
+          if (this.inputText !== '' && this.inputText.length < 250) {
             this.speechBubble = this.sendMessage(this.inputText);
             element.value = '';
             this.socket.emit('messageSent', this.inputText);

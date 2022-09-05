@@ -11,23 +11,20 @@ export default function usePhaser(config) {
   const gameContainer = useRef(null);
   useEffect(() => {
     if (!game.current && gameContainer.current) {
-      const socket = io.connect();
       const mainRoom = new MainRoom('mainRoom', { store: 'store' });
       const meditationRoom = new MeditationRoom('meditationRoom', {
         store: 'store',
       });
-      const chatRoom = new ChatRoom('chatRoom', { store: 'store', socket });
-      // const gameRoom = new GameRoom('gameRoom', {socket})
-      const gameRoom = new GameRoom('gameRoom', { socket });
+      const chatRoom = new ChatRoom('chatRoom', { store: 'store' });
+      const gameRoom = new GameRoom('gameRoom', {});
       game.current = new Phaser.Game({
         ...config,
         parent: gameContainer.current,
-        // scene: [gameRoom],
         scene: [mainRoom, meditationRoom, chatRoom, gameRoom],
       });
     }
   }, [config]);
-  //   console.log(game);  === undefined
+
   return {
     game,
     gameContainer,

@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 
 export default class GameRoom extends Phaser.Scene {
-  constructor({ socket }) {
+  constructor({}) {
     super({ key: 'GameRoom' });
-    this.socket = socket;
+
     this.cloudsWhite;
     this.cloudsWhiteSmall;
     this.gameOver = false;
