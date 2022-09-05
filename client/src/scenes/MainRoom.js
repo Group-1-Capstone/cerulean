@@ -1,12 +1,9 @@
 import Phaser from 'phaser';
-// import { io } from 'socket.io-client';
 
 export default class MainRoom extends Phaser.Scene {
-  constructor(name, { store, socket }) {
+  constructor(name, { store }) {
     super({ key: 'MainRoom' });
-    // why do we have "name" in constructor and super?
     // this.store = store,
-    this.socket = socket;
     this.isClicking = false;
   }
 
@@ -19,10 +16,6 @@ export default class MainRoom extends Phaser.Scene {
     this.load.image('room', 'assets/mainroom.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('jessie', 'assets/jessieFront.png');
-    // this.load.spritesheet('jessie', 'sprites/jessie.png', {
-    //   frameWidth: 47,
-    //   frameHeight: 63,
-    // });
     this.load.image('journal', 'assets/journal.png');
     this.load.image('chatDoor', 'assets/chatDoor.png');
     this.load.image('gameDoor', 'assets/gameDoor.png');
@@ -33,7 +26,6 @@ export default class MainRoom extends Phaser.Scene {
   }
 
   create() {
-    // console.log('store', this.store);
     this.add.image(400, 300, 'room');
 
     const x = 463;
@@ -114,9 +106,6 @@ export default class MainRoom extends Phaser.Scene {
       const medRoomButton = this.add
         .image(700, 450, 'medRoomButton')
         .setInteractive();
-
-      // TODO: test if 'pointerup' works for clicking buttons on mobile.
-      // see movement controls in update function - that does work on mobile.
 
       // TODO: in the button function, store the response in DB
       // if we wanted only the one door to appear after clicking button and player enters on their own:
