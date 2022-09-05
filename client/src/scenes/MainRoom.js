@@ -1,12 +1,8 @@
 import Phaser from 'phaser';
-// import { io } from 'socket.io-client';
 
 export default class MainRoom extends Phaser.Scene {
-  constructor(name, { store, socket }) {
-    super({ key: 'MainRoom' });
-    // why do we have "name" in constructor and super?
-    // this.store = store,
-    this.socket = socket;
+  constructor() {
+    super('MainRoom');
     this.isClicking = false;
   }
 
@@ -33,7 +29,8 @@ export default class MainRoom extends Phaser.Scene {
   }
 
   create() {
-    // console.log('store', this.store);
+    const scene = this;
+    // BACKGROUND
     this.add.image(400, 300, 'room');
 
     const x = 463;
@@ -43,7 +40,6 @@ export default class MainRoom extends Phaser.Scene {
     const gameDoor = this.physics.add.image(250, 100, 'gameDoor');
     const chatDoor = this.physics.add.image(550, 100, 'chatDoor');
     const medDoor = this.physics.add.image(700, 100, 'medDoor');
-
     function gameDoorTouched() {
       this.scene.start('GameRoom');
     }
@@ -72,8 +68,6 @@ export default class MainRoom extends Phaser.Scene {
     );
     this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
 
-    // star is a placeholder for the small journal that opens up on collision
-    // const star = this.physics.add.image(400, 250, "star");
     const star = this.physics.add.image(700, 300, 'star');
     this.physics.add.collider(this.player, star, starTouched, null, this);
 
@@ -102,7 +96,7 @@ export default class MainRoom extends Phaser.Scene {
       this.add.image(400, 300, 'journal');
       const promptText = this.add.text(200, 250, 'How are you feeling?', {
         fontSize: '32px',
-        fill: '#EE3D73', // font color
+        fill: '#EE3D73',
       });
 
       const chatRoomButton = this.add
@@ -114,13 +108,6 @@ export default class MainRoom extends Phaser.Scene {
       const medRoomButton = this.add
         .image(700, 450, 'medRoomButton')
         .setInteractive();
-
-      // TODO: test if 'pointerup' works for clicking buttons on mobile.
-      // see movement controls in update function - that does work on mobile.
-
-      // TODO: in the button function, store the response in DB
-      // if we wanted only the one door to appear after clicking button and player enters on their own:
-      // see commented code under medRoomButton
 
       chatRoomButton.on(
         'pointerup',
@@ -142,9 +129,6 @@ export default class MainRoom extends Phaser.Scene {
         'pointerup',
         function () {
           this.scene.start('MeditationRoom');
-          // if we wanted the door to appear after clicking button and player enters on their own:
-          // const medDoor = this.physics.add.image(700, 100, "medDoor");
-          // this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
         },
         this
       );
@@ -156,11 +140,16 @@ export default class MainRoom extends Phaser.Scene {
       'Walk over to the star/journal',
       {
         fontSize: '32px',
-        fill: '#EE3D73', // font color
+        fill: '#EE3D73',
       }
     );
-
     this.player.setCollideWorldBounds(true);
+
+    // CREATE SOCKET
+    this.socket = io();
+
+    // PASS CHATROOM OUR SOCKET, LAUNCH
+    scene.scene.launch('ChatRoom', { socket: scene.socket });
   }
 
   update() {

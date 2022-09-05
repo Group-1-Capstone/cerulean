@@ -1,28 +1,29 @@
-import Phaser from 'phaser';
-
-// const socket = io.connect();
-
-// const main = new Main('main', { store: 'store', socket });
-
+/** @type {import('./typings/phaser')} */
+import 'phaser';
 const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  // scene: [main],
-  pixelArt: true,
+  render: {
+    pixelArt: true,
+  },
+  scale: {
+    parent: 'app',
+    // scaleMode: Phaser.Scale.FIT,
+    autoCenter: true,
+  },
   transparent: true,
-  parent: 'gameContainer',
   physics: {
     default: 'arcade',
     arcade: {
       debug: true,
-      // gravity: { y: 20 },
+      gravity: { y: 0 },
       enableBody: true,
     },
   },
   dom: {
-    createContainer: true
-},
+    createContainer: true,
+  },
+  scene: [],
 };
-
 export default config;

@@ -19,3 +19,7 @@ form div {
   margin: 1em;
   display: inline-block;
 }
+.gameContainer {
+  width: 100%;
+  height: 100%;
+}

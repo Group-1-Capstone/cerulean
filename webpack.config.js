@@ -1,22 +1,10 @@
-const isDev = process.env.NODE_ENV === 'development';
-
-const webpack = require('webpack');
-const path = require('path');
 module.exports = {
-  mode: isDev ? 'development' : 'production',
-  entry: ['./client/index.js'],
+  entry: ['./client/src/index.js'],
   output: {
-    path: path.resolve(__dirname, 'public'),
-    publicPath: '/public/',
-    filename: 'bundle.js',
-  },
-  resolve: {
-    extensions: ['.js', '.jsx'],
+    path: __dirname,
+    filename: './public/bundle.js',
   },
   devtool: 'source-map',
-  watchOptions: {
-    ignored: /node_modules/,
-  },
   module: {
     rules: [
       {
@@ -41,10 +29,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      CANVAS_RENDERER: JSON.stringify(true),
-      WEBGL_RENDERER: JSON.stringify(true),
-    }),
-  ],
 };

@@ -1,11 +1,10 @@
 import Phaser from 'phaser';
-import { io } from 'socket.io-client';
 
 export default class ChatRoom extends Phaser.Scene {
-  constructor(name, { store, socket }) {
-    super({ key: 'ChatRoom' });
-    // this.store = store,
-    this.socket = socket;
+  constructor() {
+    super('ChatRoom');
+    this.state = {};
+    this.hasBeenSet = false;
     this.otherPlayers = {};
     this.speechBubbles = {};
     this.speechBubble = {};
@@ -13,6 +12,10 @@ export default class ChatRoom extends Phaser.Scene {
     this.bubbleHeight = 160;
     this.inputText = '';
     this.topOnly = true;
+  }
+  // since we passed our socket to Chatroom from mainroom we need to initialize it here.
+  init(data) {
+    this.socket = data.socket;
   }
 
   preload() {

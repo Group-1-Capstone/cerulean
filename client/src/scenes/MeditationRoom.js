@@ -1,12 +1,8 @@
 import Phaser from 'phaser';
-// import { io } from 'socket.io-client';
 
 export default class MeditationRoom extends Phaser.Scene {
-  constructor(name, { store, socket }) {
-    super({ key: 'MeditationRoom' });
-    //why do we have "name" in constructor and super?
-    // this.store = store,
-    this.socket = socket;
+  constructor() {
+    super('MeditationRoom');
   }
 
   preload() {
@@ -35,7 +31,10 @@ export default class MeditationRoom extends Phaser.Scene {
     const music = this.sound.add('music');
     music.play();
 
-    const exitButton = this.add.image(70, 500, 'exit').setInteractive().setScale(.5);
+    const exitButton = this.add
+      .image(70, 500, 'exit')
+      .setInteractive()
+      .setScale(0.5);
 
     const startButton = this.add
       .image(400, 395, 'start')
