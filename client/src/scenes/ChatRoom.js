@@ -19,6 +19,8 @@ export default class ChatRoom extends Phaser.Scene {
     this.load.image('jessie', 'assets/jessieFront.png');
     this.load.image('exit', 'assets/exit.png');
     this.load.image('star', 'assets/star.png');
+
+    this.load.audio('exitSound', 'assets/doorClose_1.ogg');
   }
 
   create() {
@@ -40,7 +42,10 @@ export default class ChatRoom extends Phaser.Scene {
     chatZone.setInteractive();
     const exit = this.physics.add.image(700, 100, 'exit');
 
+    this.exitSound = this.sound.add('exitSound');
+
     function exitTouched() {
+      this.exitSound.play();
       this.socket.disconnect();
       this.scene.start('MainRoom');
     }

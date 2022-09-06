@@ -23,6 +23,9 @@ export default class MainRoom extends Phaser.Scene {
     this.load.image('chatRoomButton', 'assets/chatRoomButton.png');
     this.load.image('gameRoomButton', 'assets/gameRoomButton.png');
     this.load.image('medRoomButton', 'assets/medRoomButton.png');
+
+    this.load.audio('doorOpenSound', 'assets/doorOpen_2.ogg');
+    this.load.audio('enterGameRoomSound', 'assets/dino/jingles_NES03.ogg');
   }
 
   create() {
@@ -36,15 +39,21 @@ export default class MainRoom extends Phaser.Scene {
     const chatDoor = this.physics.add.image(550, 100, 'chatDoor');
     const medDoor = this.physics.add.image(700, 100, 'medDoor');
 
+    this.doorOpenSound = this.sound.add('doorOpenSound');
+    this.enterGameRoomSound = this.sound.add('enterGameRoomSound');
+
     function gameDoorTouched() {
+      this.enterGameRoomSound.play();
       this.scene.start('GameRoom');
     }
 
     function chatDoorTouched() {
+      this.doorOpenSound.play();
       this.scene.start('ChatRoom');
     }
 
     function medDoorTouched() {
+      this.doorOpenSound.play();
       this.scene.start('MeditationRoom');
     }
 
@@ -114,6 +123,7 @@ export default class MainRoom extends Phaser.Scene {
       chatRoomButton.on(
         'pointerup',
         function () {
+          this.doorOpenSound.play();
           this.scene.start('ChatRoom');
         },
         this
@@ -122,6 +132,7 @@ export default class MainRoom extends Phaser.Scene {
       gameRoomButton.on(
         'pointerup',
         () => {
+          this.enterGameRoomSound.play();
           this.scene.start('GameRoom');
         },
         this
@@ -130,6 +141,7 @@ export default class MainRoom extends Phaser.Scene {
       medRoomButton.on(
         'pointerup',
         function () {
+          this.doorOpenSound.play();
           this.scene.start('MeditationRoom');
           // if we wanted the door to appear after clicking button and player enters on their own:
           // const medDoor = this.physics.add.image(700, 100, "medDoor");
@@ -139,15 +151,11 @@ export default class MainRoom extends Phaser.Scene {
       );
     }
 
-    const journalText = this.add.text(
-      150,
-      550,
-      'Walk over to the star/journal',
-      {
-        fontSize: '32px',
-        fill: '#EE3D73', // font color
-      }
-    );
+    const journalText = this.add.text(150, 550, 'Walk over to the journal', {
+      fontSize: '32px',
+      fill: '#EE3D73', // font color
+      fontStyle: 'bold',
+    });
 
     this.player.setCollideWorldBounds(true);
   }
