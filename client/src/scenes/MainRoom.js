@@ -44,7 +44,7 @@ export default class MainRoom extends Phaser.Scene {
 
     function gameDoorTouched() {
       this.enterGameRoomSound.play();
-      this.scene.start('GameRoom');
+      this.scene.start('GameRoom', { avatar: this.player });
     }
 
     function chatDoorTouched() {
