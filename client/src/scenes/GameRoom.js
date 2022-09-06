@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export default class GameRoom extends Phaser.Scene {
-  constructor({}) {
+  constructor() {
     super({ key: 'GameRoom' });
 
     this.cloudsWhite;
@@ -23,13 +23,29 @@ export default class GameRoom extends Phaser.Scene {
     );
     this.load.image('exitButton', 'assets/button.png');
     this.load.image('restartButton', 'assets/bomb.png');
+
     this.load.image('rock', 'assets/dino/rock.png');
+    this.load.image('bush', 'assets/dino/bush.png');
+    this.load.image('cactus', 'assets/dino/cactus.png');
+    this.load.image('disk', 'assets/dino/diskBig.png');
+    this.load.image('wideRock', 'assets/dino/wideRock.png');
+    this.load.image('error', 'assets/dino/serverError.png');
+
+    this.load.audio('runningSound', 'assets/dino/footstep_concrete_003.ogg');
+    this.load.audio('exitSound', 'assets/doorClose_1.ogg');
+    this.load.audio('playAgainSound', 'assets/dino/jingles_HIT01.ogg');
   }
 
   create() {
     const div = document.getElementById('gameContainer');
     this.add.image(400, 300, 'sky');
     const { height, width } = this.game.config;
+
+    this.runningSound = this.sound.add('runningSound', { loop: true });
+    this.runningSound.play();
+
+    this.exitSound = this.sound.add('exitSound');
+    this.playAgainSound = this.sound.add('playAgainSound');
 
     this.gameSpeed = 10;
     this.ground = this.add
@@ -64,16 +80,19 @@ export default class GameRoom extends Phaser.Scene {
       .setGravityY(5000)
       .play('run');
 
-    this.obsticles = this.physics.add.group();
+    this.obstacles = this.physics.add.group();
 
     this.physics.add.collider(
       this.player,
-      this.obsticles,
+      this.obstacles,
       () => {
-        const gameOverText = this.add.text(400, 300, 'The End', {
+        this.runningSound.pause();
+        const gameOverText = this.add.text(300, 400, 'Game Over', {
           fontSize: '64px',
           fill: '#EE3D73', //font color
         });
+        const b = gameOverText.getBounds();
+        gameOverText.setPosition((800 - b.width) / 2, 400);
         this.gameOver = true;
         this.player.anims.stop();
       },
@@ -96,6 +115,8 @@ export default class GameRoom extends Phaser.Scene {
     exitButton.on(
       'pointerup',
       function () {
+        this.runningSound.destroy();
+        this.exitSound.play();
         this.gameOver = false;
         this.scene.start('MainRoom');
       },
@@ -105,35 +126,101 @@ export default class GameRoom extends Phaser.Scene {
     restartButton.on(
       'pointerup',
       function () {
+        this.runningSound.destroy();
+        this.playAgainSound.play();
         this.gameOver = false;
         this.scene.restart();
       },
       this
     );
+
     this.score = 0;
-    this.scoreText = this.add.text(500, 400, `Score: ${this.score}`, {
-      fontSize: '24px',
+    this.scoreText = this.add.text(500, 30, `Score: ${this.score}`, {
+      fontSize: '36px',
       fill: '#BFF0D4',
     });
+
+    this.messageIndex = 0;
   }
 
-  placeObsticle() {
+  updateMessage() {
+    const messages = [
+      'talented',
+      'brilliant',
+      'incredible',
+      'amazing',
+      'show stopping',
+      'spectacular',
+      'totally unique',
+    ];
+
+    if (this.messageIndex === 0) {
+      console.log('first text');
+      this.messageText = this.add.text(
+        250,
+        300,
+        `You are ${messages[this.messageIndex]}`,
+        {
+          fontSize: '36px',
+          fill: '#EE3D73',
+          fontStyle: 'bold',
+        }
+      );
+      const b = this.messageText.getBounds();
+      this.messageText.setPosition((800 - b.width) / 2, 300);
+    }
+
+    if (0 < this.messageIndex < messages.length - 1) {
+      this.messageText.setText(`You are ${messages[this.messageIndex]}`);
+      const b = this.messageText.getBounds();
+      this.messageText.setPosition((800 - b.width) / 2, 300);
+    }
+
+    if (this.messageIndex === 7) {
+      this.messageText.setText('You can overcome any obstacle!');
+      const b = this.messageText.getBounds();
+      this.messageText.setPosition((800 - b.width) / 2, 300);
+    }
+
+    if (this.messageIndex < 7) {
+      this.messageIndex++;
+    }
+  }
+
+  placeObstacle() {
     const distance = Phaser.Math.Between(600, 900);
+    const obstacleNum = Math.floor(Math.random() * 6);
 
-    let obsticle;
+    let obstacle;
 
-    obsticle = this.obsticles
-      .create(
+    const obstaclesArr = [
+      'rock',
+      'bush',
+      'cactus',
+      'error',
+      'wideRock',
+      'disk',
+    ];
+
+    if (
+      obstaclesArr[obstacleNum] === 'bush' ||
+      obstaclesArr[obstacleNum] === 'wideRock' ||
+      obstaclesArr[obstacleNum] === 'rock'
+    ) {
+      obstacle = this.obstacles.create(
         this.game.config.width + distance,
-        this.game.config.height,
-        'rock'
-      )
-      .setScale(0.5)
-      .setOrigin(0, 1);
+        this.game.config.height - 65,
+        `${obstaclesArr[obstacleNum]}`
+      );
+    } else {
+      obstacle = this.obstacles.create(
+        this.game.config.width + distance,
+        this.game.config.height - 80,
+        `${obstaclesArr[obstacleNum]}`
+      );
+    }
 
-    obsticle.body.offset.y = +10;
-
-    obsticle.setImmovable();
+    obstacle.setImmovable();
   }
 
   update(time, delta) {
@@ -143,20 +230,24 @@ export default class GameRoom extends Phaser.Scene {
     this.score++;
     this.scoreText.setText(`Score: ${this.score}`);
 
+    if (this.score % 300 === 0 && this.score <= 2400) {
+      this.updateMessage();
+    }
+
     this.cloudsWhite.tilePositionX += 0.25;
     this.cloudsWhiteSmall.tilePositionX += 0.5;
 
     // every update the ground tile will move forward by this amt
     this.ground.tilePositionX += this.gameSpeed;
 
-    Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
+    Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
     // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
 
     this.respawnTime += delta * this.gameSpeed * 0.08;
-    // this.gameSpeed += 0.01
+    this.gameSpeed += 0.003;
 
     if (this.respawnTime >= 1500) {
-      this.placeObsticle();
+      this.placeObstacle();
       this.respawnTime = 0;
     }
 
@@ -171,8 +262,10 @@ export default class GameRoom extends Phaser.Scene {
       //while in air
       this.player.anims.stop();
       this.player.setFrame('alec8');
+      this.runningSound.pause();
     } else {
       this.player.play('run', true);
+      this.runningSound.resume();
     }
   }
 }
