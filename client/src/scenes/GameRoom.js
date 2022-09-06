@@ -80,17 +80,19 @@ export default class GameRoom extends Phaser.Scene {
       .setGravityY(5000)
       .play('run');
 
-    this.obsticles = this.physics.add.group();
+    this.obstacles = this.physics.add.group();
 
     this.physics.add.collider(
       this.player,
-      this.obsticles,
+      this.obstacles,
       () => {
         this.runningSound.pause();
-        const gameOverText = this.add.text(300, 400, 'The End', {
+        const gameOverText = this.add.text(300, 400, 'Game Over', {
           fontSize: '64px',
           fill: '#EE3D73', //font color
         });
+        const b = gameOverText.getBounds();
+        gameOverText.setPosition((800 - b.width) / 2, 400);
         this.gameOver = true;
         this.player.anims.stop();
       },
@@ -159,19 +161,25 @@ export default class GameRoom extends Phaser.Scene {
         300,
         `You are ${messages[this.messageIndex]}`,
         {
-          fontSize: '36px', //make sure longer words fit on screen
+          fontSize: '36px',
           fill: '#EE3D73',
           fontStyle: 'bold',
         }
       );
+      const b = this.messageText.getBounds();
+      this.messageText.setPosition((800 - b.width) / 2, 300);
     }
 
     if (0 < this.messageIndex < messages.length - 1) {
       this.messageText.setText(`You are ${messages[this.messageIndex]}`);
+      const b = this.messageText.getBounds();
+      this.messageText.setPosition((800 - b.width) / 2, 300);
     }
 
     if (this.messageIndex === 7) {
       this.messageText.setText('You can overcome any obstacle!');
+      const b = this.messageText.getBounds();
+      this.messageText.setPosition((800 - b.width) / 2, 300);
     }
 
     if (this.messageIndex < 7) {
@@ -179,11 +187,11 @@ export default class GameRoom extends Phaser.Scene {
     }
   }
 
-  placeObsticle() {
+  placeObstacle() {
     const distance = Phaser.Math.Between(600, 900);
     const obstacleNum = Math.floor(Math.random() * 6);
 
-    let obsticle;
+    let obstacle;
 
     const obstaclesArr = [
       'rock',
@@ -199,20 +207,20 @@ export default class GameRoom extends Phaser.Scene {
       obstaclesArr[obstacleNum] === 'wideRock' ||
       obstaclesArr[obstacleNum] === 'rock'
     ) {
-      obsticle = this.obsticles.create(
+      obstacle = this.obstacles.create(
         this.game.config.width + distance,
         this.game.config.height - 65,
         `${obstaclesArr[obstacleNum]}`
       );
     } else {
-      obsticle = this.obsticles.create(
+      obstacle = this.obstacles.create(
         this.game.config.width + distance,
         this.game.config.height - 80,
         `${obstaclesArr[obstacleNum]}`
       );
     }
 
-    obsticle.setImmovable();
+    obstacle.setImmovable();
   }
 
   update(time, delta) {
@@ -232,15 +240,14 @@ export default class GameRoom extends Phaser.Scene {
     // every update the ground tile will move forward by this amt
     this.ground.tilePositionX += this.gameSpeed;
 
-    Phaser.Actions.IncX(this.obsticles.getChildren(), -this.gameSpeed);
+    Phaser.Actions.IncX(this.obstacles.getChildren(), -this.gameSpeed);
     // Takes an array of Game Objects, or any objects that have a public x property, and then adds the given value to each of their x properties.
 
     this.respawnTime += delta * this.gameSpeed * 0.08;
-    // this.gameSpeed += 0.01;
     this.gameSpeed += 0.003;
 
     if (this.respawnTime >= 1500) {
-      this.placeObsticle();
+      this.placeObstacle();
       this.respawnTime = 0;
     }
 
