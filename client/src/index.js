@@ -19,7 +19,10 @@ export default class Game extends Phaser.Game {
     this.scene.add('MeditationRoom', MeditationRoom);
     //start the game with the MainScene
     this.scene.start('MainRoom');
+    // CREATE SOCKET
   }
+
+  // PASS CHATROOM OUR SOCKET, LAUNCH
 }
 // create a new instance of the game
 window.onload = function () {

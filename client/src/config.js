@@ -8,7 +8,7 @@ const config = {
     pixelArt: true,
   },
   scale: {
-    parent: 'app',
+    parent: 'gameContainer',
     // scaleMode: Phaser.Scale.FIT,
     autoCenter: true,
   },
@@ -22,7 +22,7 @@ const config = {
     },
   },
   dom: {
-    createContainer: true,
+    createContainer: false,
   },
   scene: [],
 };

@@ -16,16 +16,18 @@ export default class ChatRoom extends Phaser.Scene {
   // since we passed our socket to Chatroom from mainroom we need to initialize it here.
   init(data) {
     this.socket = data.socket;
+    console.log('data', data);
+    this.player = data.player;
   }
 
   preload() {
     this.load.html('textInput', 'assets/textInput.html');
-    this.load.image('jessie', 'assets/jessieFront.png');
     this.load.image('exit', 'assets/exit.png');
     this.load.image('star', 'assets/star.png');
   }
 
   create() {
+    const scene = this;
     const sceneFrame = this.add.rectangle(400, 300, 800, 600);
     sceneFrame.setDepth(0);
     const chatZone = this.add.rectangle(50, 550, 400, 100);
@@ -43,13 +45,13 @@ export default class ChatRoom extends Phaser.Scene {
     const exit = this.physics.add.image(700, 100, 'exit');
 
     function exitTouched() {
-      this.socket.disconnect();
-      this.scene.start('MainRoom');
+      // scene.scene.switch('MainRoom');
+      scene.scene.switch('MainRoom');
     }
 
     const x = 100;
     const y = 300;
-    this.player = this.physics.add.sprite(x, y, 'jessie');
+    // this.player = this.physics.add.sprite(x, y, 'jessie');
 
     this.physics.add.collider(this.player, exit, exitTouched, null, this);
 
@@ -57,6 +59,7 @@ export default class ChatRoom extends Phaser.Scene {
     this.socket.emit('newPlayer', this.player);
 
     // server telling me a new player joined
+    // ! this is adding the sprite to the scene multiple times... ? here and in line 71. Jessie should be getting passed back and forth unless a new player has connected to the main room. then their sprite will be passed in here too.
     this.socket.on('playerJoined', (data) => {
       const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
       this.otherPlayers[data.id] = newPlayer;

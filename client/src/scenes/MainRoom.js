@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export default class MainRoom extends Phaser.Scene {
-  constructor(name, { store }) {
+  constructor() {
     super({ key: 'MainRoom' });
     // this.store = store,
     this.isClicking = false;
@@ -32,21 +32,24 @@ export default class MainRoom extends Phaser.Scene {
 
     const x = 463;
     const y = 458;
+
     this.player = this.physics.add.sprite(x, y, 'jessie');
+    this.player.body.onCollide = true;
 
     const gameDoor = this.physics.add.image(250, 100, 'gameDoor');
     const chatDoor = this.physics.add.image(550, 100, 'chatDoor');
     const medDoor = this.physics.add.image(700, 100, 'medDoor');
     function gameDoorTouched() {
-      this.scene.start('GameRoom');
+      scene.scene.switch('GameRoom');
     }
 
     function chatDoorTouched() {
-      this.scene.start('ChatRoom');
+      scene.scene.switch('ChatRoom');
+      // this.scene.start('ChatRoom');
     }
 
     function medDoorTouched() {
-      this.scene.start('MeditationRoom');
+      scene.scene.switch('MeditationRoom');
     }
 
     this.physics.add.collider(
@@ -140,13 +143,12 @@ export default class MainRoom extends Phaser.Scene {
         fill: '#EE3D73',
       }
     );
-    this.player.setCollideWorldBounds(true);
-
-    // CREATE SOCKET
+    scene.player.setCollideWorldBounds(true);
     this.socket = io();
-
-    // PASS CHATROOM OUR SOCKET, LAUNCH
-    scene.scene.launch('ChatRoom', { socket: scene.socket });
+    scene.scene.launch('ChatRoom', {
+      socket: scene.socket,
+      player: scene.player,
+    });
   }
 
   update() {
