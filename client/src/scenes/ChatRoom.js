@@ -14,9 +14,18 @@ export default class ChatRoom extends Phaser.Scene {
     this.topOnly = true;
   }
 
+  init(data) {
+    this.avatar = data.avatar;
+  }
+
   preload() {
     this.load.html('textInput', 'assets/textInput.html');
-    this.load.image('jessie', 'assets/jessieFront.png');
+
+    this.load.image('avatar1', 'assets/dino/rock.png');
+    this.load.image('avatar2', 'assets/dino/bush.png');
+    this.load.image('avatar3', 'assets/jessieFront.png');
+    this.load.image('avatar4', 'assets/jessieFront.png');
+
     this.load.image('exit', 'assets/exit.png');
     this.load.image('star', 'assets/star.png');
 
@@ -47,12 +56,12 @@ export default class ChatRoom extends Phaser.Scene {
     function exitTouched() {
       this.exitSound.play();
       this.socket.disconnect();
-      this.scene.start('MainRoom');
+      this.scene.start('MainRoom', { avatar: this.avatar });
     }
 
     const x = 100;
     const y = 300;
-    this.player = this.physics.add.sprite(x, y, 'jessie');
+    this.player = this.physics.add.sprite(x, y, this.avatar);
 
     this.physics.add.collider(this.player, exit, exitTouched, null, this);
 
@@ -61,17 +70,23 @@ export default class ChatRoom extends Phaser.Scene {
 
     // server telling me a new player joined
     this.socket.on('playerJoined', (data) => {
-      const newPlayer = this.physics.add.sprite(data.x, data.y, 'jessie');
+      //data.textureKey is the name of the avatar
+      const newPlayer = this.physics.add.sprite(
+        data.x,
+        data.y,
+        `${data.textureKey}`
+      );
       this.otherPlayers[data.id] = newPlayer;
     });
 
     // the server telling me all the existing players and their locations
     this.socket.on('allPlayers', (allPlayers) => {
+      console.log('allplayers data', allPlayers);
       Object.keys(allPlayers).forEach((socketID) => {
         let player = this.physics.add.sprite(
           allPlayers[socketID].x,
           allPlayers[socketID].y,
-          'jessie'
+          `${allPlayers[socketID].textureKey}`
         );
         this.otherPlayers[socketID] = player;
       });

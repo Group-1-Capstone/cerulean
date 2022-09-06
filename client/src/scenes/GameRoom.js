@@ -6,6 +6,10 @@ export default class GameRoom extends Phaser.Scene {
     this.gameOver = false;
   }
 
+  init(data) {
+    this.avatar = data.avatar;
+  }
+
   preload() {
     this.load.image('ground', 'assets/dino/ground.png');
     this.load.image('sky', 'assets/dino/sky.png');
@@ -120,7 +124,7 @@ export default class GameRoom extends Phaser.Scene {
         this.runningSound.destroy();
         this.exitSound.play();
         this.gameOver = false;
-        this.scene.start('MainRoom');
+        this.scene.start('MainRoom', { avatar: this.avatar });
       },
       this
     );
