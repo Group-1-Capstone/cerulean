@@ -3,9 +3,6 @@ import Phaser from 'phaser';
 export default class GameRoom extends Phaser.Scene {
   constructor() {
     super({ key: 'GameRoom' });
-
-    this.cloudsWhite;
-    this.cloudsWhiteSmall;
     this.gameOver = false;
   }
 
@@ -34,18 +31,23 @@ export default class GameRoom extends Phaser.Scene {
     this.load.audio('runningSound', 'assets/dino/footstep_concrete_003.ogg');
     this.load.audio('exitSound', 'assets/doorClose_1.ogg');
     this.load.audio('playAgainSound', 'assets/dino/jingles_HIT01.ogg');
+    this.load.audio('jumpSound', 'assets/dino/jump.wav');
   }
 
   create() {
     const div = document.getElementById('gameContainer');
-    this.add.image(400, 300, 'sky');
+    const sky = this.add.image(400, 300, 'sky').setInteractive();
     const { height, width } = this.game.config;
 
-    this.runningSound = this.sound.add('runningSound', { loop: true });
+    this.runningSound = this.sound.add('runningSound', {
+      volume: 0.25,
+      loop: true,
+    });
     this.runningSound.play();
 
     this.exitSound = this.sound.add('exitSound');
     this.playAgainSound = this.sound.add('playAgainSound');
+    this.jumpSound = this.sound.add('jumpSound');
 
     this.gameSpeed = 10;
     this.ground = this.add
@@ -134,6 +136,17 @@ export default class GameRoom extends Phaser.Scene {
       this
     );
 
+    sky.on(
+      'pointerup',
+      function () {
+        if (!this.gameOver && this.onFloor) {
+          this.jumpSound.play();
+          this.onFloor = false;
+        }
+      },
+      this
+    );
+
     this.score = 0;
     this.scoreText = this.add.text(500, 30, `Score: ${this.score}`, {
       fontSize: '36px',
@@ -155,7 +168,6 @@ export default class GameRoom extends Phaser.Scene {
     ];
 
     if (this.messageIndex === 0) {
-      console.log('first text');
       this.messageText = this.add.text(
         250,
         300,
@@ -255,6 +267,7 @@ export default class GameRoom extends Phaser.Scene {
       if (!this.player.body.onFloor()) {
         return;
       }
+      this.onFloor = true;
       this.player.setVelocityY(-1600);
     }
 

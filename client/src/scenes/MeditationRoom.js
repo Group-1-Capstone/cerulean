@@ -15,6 +15,8 @@ export default class MeditationRoom extends Phaser.Scene {
       frameWidth: 600,
       frameHeight: 600,
     });
+
+    this.load.audio('exitSound', 'assets/doorClose_1.ogg');
   }
 
   create() {
@@ -28,6 +30,8 @@ export default class MeditationRoom extends Phaser.Scene {
     sprite.setDepth(1);
 
     this.add.image(400, 300, 'medRoom');
+
+    this.exitSound = this.sound.add('exitSound');
 
     const music = this.sound.add('music');
     music.play();
@@ -47,6 +51,7 @@ export default class MeditationRoom extends Phaser.Scene {
       'pointerup',
       function () {
         music.destroy();
+        this.exitSound.play();
         this.scene.start('MainRoom');
       },
       this
