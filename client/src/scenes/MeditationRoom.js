@@ -6,6 +6,10 @@ export default class MeditationRoom extends Phaser.Scene {
     // this.store = store,
   }
 
+  init(data) {
+    this.avatar = data.avatar;
+  }
+
   preload() {
     this.load.image('medRoom', 'assets/meditationroom.png');
     this.load.image('exit', 'assets/back-button.png');
@@ -52,7 +56,7 @@ export default class MeditationRoom extends Phaser.Scene {
       function () {
         music.destroy();
         this.exitSound.play();
-        this.scene.start('MainRoom');
+        this.scene.start('MainRoom', { avatar: this.avatar });
       },
       this
     );

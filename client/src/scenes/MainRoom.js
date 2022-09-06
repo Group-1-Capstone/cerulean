@@ -7,6 +7,10 @@ export default class MainRoom extends Phaser.Scene {
     this.isClicking = false;
   }
 
+  init(data) {
+    this.avatar = data.avatar;
+  }
+
   preload() {
     this.load.plugin(
       'rexglowfilterpipelineplugin',
@@ -14,8 +18,6 @@ export default class MainRoom extends Phaser.Scene {
       true
     );
     this.load.image('room', 'assets/mainroom.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('jessie', 'assets/jessieFront.png');
     this.load.image('journal', 'assets/journal.png');
     this.load.image('chatDoor', 'assets/chatDoor.png');
     this.load.image('gameDoor', 'assets/gameDoor.png');
@@ -23,6 +25,11 @@ export default class MainRoom extends Phaser.Scene {
     this.load.image('chatRoomButton', 'assets/chatRoomButton.png');
     this.load.image('gameRoomButton', 'assets/gameRoomButton.png');
     this.load.image('medRoomButton', 'assets/medRoomButton.png');
+
+    this.load.image('avatar1', 'assets/dino/rock.png');
+    this.load.image('avatar2', 'assets/dino/bush.png');
+    this.load.image('avatar3', 'assets/jessieFront.png');
+    this.load.image('avatar4', 'assets/jessieFront.png');
 
     this.load.audio('doorOpenSound', 'assets/doorOpen_2.ogg');
     this.load.audio('enterGameRoomSound', 'assets/dino/jingles_NES03.ogg');
@@ -33,7 +40,7 @@ export default class MainRoom extends Phaser.Scene {
 
     const x = 463;
     const y = 458;
-    this.player = this.physics.add.sprite(x, y, 'jessie');
+    this.player = this.physics.add.sprite(x, y, this.avatar);
 
     const gameDoor = this.physics.add.image(250, 100, 'gameDoor');
     const chatDoor = this.physics.add.image(550, 100, 'chatDoor');
@@ -44,17 +51,17 @@ export default class MainRoom extends Phaser.Scene {
 
     function gameDoorTouched() {
       this.enterGameRoomSound.play();
-      this.scene.start('GameRoom', { avatar: this.player });
+      this.scene.start('GameRoom', { avatar: this.avatar });
     }
 
     function chatDoorTouched() {
       this.doorOpenSound.play();
-      this.scene.start('ChatRoom');
+      this.scene.start('ChatRoom', { avatar: this.avatar });
     }
 
     function medDoorTouched() {
       this.doorOpenSound.play();
-      this.scene.start('MeditationRoom');
+      this.scene.start('MeditationRoom', { avatar: this.avatar });
     }
 
     this.physics.add.collider(
@@ -124,7 +131,7 @@ export default class MainRoom extends Phaser.Scene {
         'pointerup',
         function () {
           this.doorOpenSound.play();
-          this.scene.start('ChatRoom');
+          this.scene.start('ChatRoom', { avatar: this.avatar });
         },
         this
       );
@@ -133,7 +140,7 @@ export default class MainRoom extends Phaser.Scene {
         'pointerup',
         () => {
           this.enterGameRoomSound.play();
-          this.scene.start('GameRoom');
+          this.scene.start('GameRoom', { avatar: this.avatar });
         },
         this
       );
@@ -142,7 +149,7 @@ export default class MainRoom extends Phaser.Scene {
         'pointerup',
         function () {
           this.doorOpenSound.play();
-          this.scene.start('MeditationRoom');
+          this.scene.start('MeditationRoom', { avatar: this.avatar });
           // if we wanted the door to appear after clicking button and player enters on their own:
           // const medDoor = this.physics.add.image(700, 100, "medDoor");
           // this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
