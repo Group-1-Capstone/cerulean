@@ -7,7 +7,7 @@ export default class DevsRoom extends Phaser.Scene {
 
   preload() {
     // placeholder for background img: this.load.image('background', assets/background.png');
-    this.load.image('logo', 'assets/logo.png');
+    this.load.image('blank', 'assets/blank.png');
     this.load.image('enter', 'assets/enter-button.png');
     // white versions of music buttons also in assets
     this.load.image('musicOn', 'assets/music_on_blk.png');
@@ -19,7 +19,7 @@ export default class DevsRoom extends Phaser.Scene {
     const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
     const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
     
-    const logo = this.add.image(screenCenterX, screenCenterY / 2, 'logo').setDepth(1);
+    const logo = this.add.image(screenCenterX, screenCenterY / 1, 'blank').setDepth(-1);
 
     const style = { font: '12pt Arial', fill: 'white', backgroundColor: 'rgb(105, 105, 105, .9)', align: 'center', wordWrap: true };
 
@@ -32,8 +32,8 @@ export default class DevsRoom extends Phaser.Scene {
     
     We hope you enjoy Cerulean!\n`;
 
-    const devsTextBox = this.add.text(screenCenterX, screenCenterY * 1.25, text, style).setOrigin(0.5).setDepth(1);
-    const enterButton = this.add.image(screenCenterX, screenCenterY * 1.85, 'enter').setInteractive().setDepth(1);
+    const devsTextBox = this.add.text(screenCenterX, screenCenterY * .7, text, style).setOrigin(0.5).setDepth(1);
+    const enterButton = this.add.image(screenCenterX, screenCenterY * 1.35, 'enter').setInteractive().setDepth(1);
 
     this.themeMusic = this.sound.add('themeMusic', {
       volume: 0.25,

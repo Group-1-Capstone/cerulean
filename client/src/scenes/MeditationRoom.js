@@ -11,7 +11,7 @@ export default class MeditationRoom extends Phaser.Scene {
 
   preload() {
     this.load.image('medRoom', 'assets/medroom.png');
-    this.load.image('exit', 'assets/exitbutton.png');
+    this.load.image('EXIT', 'assets/exitbutton.png');
     this.load.image('start', 'assets/play-button.png');
     this.load.audio('music', 'assets/relaxing.mp3');
     this.load.spritesheet('breathingAnim', 'assets/breathe-sprite3.png', {
@@ -40,7 +40,7 @@ export default class MeditationRoom extends Phaser.Scene {
     music.play();
 
     const exitButton = this.add
-      .image(1250, 70, 'exit')
+      .image(1250, 70, 'EXIT')
       .setInteractive()
       .setScale(0.7);
 

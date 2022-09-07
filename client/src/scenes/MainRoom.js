@@ -157,12 +157,6 @@ export default class MainRoom extends Phaser.Scene {
       );
     }
 
-    const journalText = this.add.text(150, 550, 'Walk over to the journal', {
-      fontSize: '32px',
-      fill: '#EE3D73', // font color
-      fontStyle: 'bold',
-    });
-
     this.player.setCollideWorldBounds(true);
   }
 
