@@ -13,7 +13,6 @@ export default class GameRoom extends Phaser.Scene {
   preload() {
     this.load.image('ground', 'assets/dino/ground.png');
     this.load.image('sky', 'assets/dino/sky.png');
-    this.load.image('restart', 'assets/dino/restart.png');
     this.load.image('game-over', 'assets/dino/game-over.png');
     this.load.image('clouds-white', 'assets/clouds-white.png');
     this.load.image('clouds-white-small', 'assets/clouds-white-small.png');
@@ -22,8 +21,8 @@ export default class GameRoom extends Phaser.Scene {
       'assets/dino/spritesheetalec.png',
       'assets/dino/spritesheetalec.json'
     );
-    this.load.image('exitButton', 'assets/button.png');
-    this.load.image('restartButton', 'assets/bomb.png');
+    this.load.image('exitButton', 'assets/back-button.png');
+    this.load.image('restartButton', 'assets/replay.png');
 
     this.load.image('rock', 'assets/dino/rock.png');
     this.load.image('bush', 'assets/dino/bush.png');
@@ -109,13 +108,13 @@ export default class GameRoom extends Phaser.Scene {
     const exitButton = this.add
       .image(50, 50, 'exitButton')
       .setInteractive()
-      .setScale(0.2)
+      .setScale(0.5)
       .setDepth(1);
 
     const restartButton = this.add
-      .image(120, 50, 'restartButton')
+      .image(130, 50, 'restartButton')
       .setInteractive()
-      .setScale(3)
+      .setScale(.5)
       .setDepth(1);
 
     exitButton.on(
