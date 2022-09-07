@@ -19,20 +19,9 @@ export default function Game() {
         //style={{ border: '2px solid red' }}
         className={styles.gameContainer}
         ref={gameContainer}
-        id='gameContainer'
-      >
+        id='gameContainer'>
         <header>
-          <h1>Game Title</h1>
-          <div className={styles.score}>{score}</div>
         </header>
-        <footer>
-          <button
-            className={styles.fullscreenButton}
-            onClick={() => toggleFullscreen()}
-          >
-            {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-          </button>
-        </footer>
       </div>
     </div>
   );

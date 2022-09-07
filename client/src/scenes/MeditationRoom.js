@@ -11,8 +11,8 @@ export default class MeditationRoom extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('medRoom', 'assets/meditationroom.png');
-    this.load.image('exit', 'assets/back-button.png');
+    this.load.image('medRoom', 'assets/medroom.png');
+    this.load.image('exit', 'assets/exitbutton.png');
     this.load.image('start', 'assets/play-button.png');
     this.load.audio('music', 'assets/relaxing.mp3');
     this.load.spritesheet('breathingAnim', 'assets/breathe-sprite3.png', {
@@ -30,10 +30,10 @@ export default class MeditationRoom extends Phaser.Scene {
       frameRate: 12,
       repeat: -1,
     });
-    const sprite = this.add.sprite(400, 300, 'breathingAnim');
+    const sprite = this.add.sprite(650, 300, 'breathingAnim');
     sprite.setDepth(1);
 
-    this.add.image(400, 300, 'medRoom');
+    this.add.image(650, 300, 'medRoom');
 
     this.exitSound = this.sound.add('exitSound');
 
@@ -41,12 +41,12 @@ export default class MeditationRoom extends Phaser.Scene {
     music.play();
 
     const exitButton = this.add
-      .image(70, 500, 'exit')
+      .image(1250, 70, 'exit')
       .setInteractive()
-      .setScale(0.5);
+      .setScale(0.7);
 
     const startButton = this.add
-      .image(400, 395, 'start')
+      .image(650, 395, 'start')
       .setInteractive()
       .setScale(0.7)
       .setDepth(2);

@@ -21,23 +21,25 @@ export default class ChatRoom extends Phaser.Scene {
   preload() {
     this.load.html('textInput', 'assets/textInput.html');
 
-    this.load.image('avatar1', 'assets/dino/rock.png');
-    this.load.image('avatar2', 'assets/dino/bush.png');
-    this.load.image('avatar3', 'assets/jessieFront.png');
-    this.load.image('avatar4', 'assets/jessieFront.png');
+    this.load.image('avatar1', 'assets/avatar1.png');
+    this.load.image('avatar2', 'assets/avatar2.png');
+    this.load.image('avatar3', 'assets/avatar3.png');
+    this.load.image('avatar4', 'assets/avatar4.png');
+    this.load.image('bg', 'assets/blank.png');
+    this.load.image('inputBg', 'assets/btn3.png');
 
-    this.load.image('exit', 'assets/exit.png');
-    this.load.image('star', 'assets/star.png');
-
+    this.load.image('exit', 'assets/doorLonely.png');
     this.load.audio('exitSound', 'assets/doorClose_1.ogg');
   }
 
   create() {
+    const bg = this.add.image(650, 300, 'bg');
+    const inputBg = this.add.image(139, 566, 'inputBg').setScale(1.1);
     this.socket = io.connect();
 
-    const sceneFrame = this.add.rectangle(400, 300, 800, 600);
+    const sceneFrame = this.add.rectangle(650, 300, 1334, 700);
     sceneFrame.setDepth(0);
-    const chatZone = this.add.rectangle(50, 550, 400, 100);
+    const chatZone = this.add.rectangle(60, 560, 400, 100);
     chatZone.setDepth(1);
 
     sceneFrame.setInteractive().on(
@@ -49,7 +51,7 @@ export default class ChatRoom extends Phaser.Scene {
       this
     );
     chatZone.setInteractive();
-    const exit = this.physics.add.image(700, 100, 'exit');
+    const exit = this.physics.add.image(1200, 100, 'exit');
 
     this.exitSound = this.sound.add('exitSound');
 
@@ -113,7 +115,7 @@ export default class ChatRoom extends Phaser.Scene {
     this.player.setCollideWorldBounds(true);
 
     //writing a chat message
-    const inputField = this.add.dom(130, 550).createFromCache('textInput');
+    const inputField = this.add.dom(130, 530).createFromCache('textInput');
     inputField.setDepth(1);
     inputField.addListener('click');
     inputField.on(
