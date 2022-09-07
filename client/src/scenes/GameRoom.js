@@ -98,7 +98,7 @@ export default class GameRoom extends Phaser.Scene {
           fill: '#EE3D73', //font color
         });
         const b = gameOverText.getBounds();
-        gameOverText.setPosition((800 - b.width) / 2, 400);
+        gameOverText.setPosition((1300 - b.width) / 2, 400);
         this.gameOver = true;
         this.player.anims.stop();
       },
@@ -109,13 +109,13 @@ export default class GameRoom extends Phaser.Scene {
     const exitButton = this.add
       .image(50, 50, 'exitButton')
       .setInteractive()
-      .setScale(.7)
+      .setScale(0.7)
       .setDepth(1);
 
     const restartButton = this.add
       .image(120, 50, 'restartButton')
       .setInteractive()
-      .setScale(.7)
+      .setScale(0.7)
       .setDepth(1);
 
     exitButton.on(
@@ -156,6 +156,8 @@ export default class GameRoom extends Phaser.Scene {
       fontSize: '36px',
       fill: '#BFF0D4',
     });
+    const b = this.scoreText.getBounds();
+    this.scoreText.setPosition((1300 - b.width) / 2, 30);
 
     this.messageIndex = 0;
   }
@@ -245,6 +247,8 @@ export default class GameRoom extends Phaser.Scene {
     }
     this.score++;
     this.scoreText.setText(`Score: ${this.score}`);
+    const b = this.scoreText.getBounds();
+    this.scoreText.setPosition((1300 - b.width) / 2, 30);
 
     if (this.score % 300 === 0 && this.score <= 2400) {
       this.updateMessage();
