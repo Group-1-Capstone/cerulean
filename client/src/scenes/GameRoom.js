@@ -13,7 +13,6 @@ export default class GameRoom extends Phaser.Scene {
   preload() {
     this.load.image('ground', 'assets/dino/ground.png');
     this.load.image('sky', 'assets/dino/sky.png');
-    this.load.image('restart', 'assets/dino/restart.png');
     this.load.image('game-over', 'assets/dino/game-over.png');
     this.load.image('clouds-white', 'assets/clouds-white.png');
     this.load.image('clouds-white-small', 'assets/clouds-white-small.png');
