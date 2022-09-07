@@ -18,33 +18,34 @@ export default class MainRoom extends Phaser.Scene {
       true
     );
     this.load.image('room', 'assets/mainroom.png');
-    this.load.image('journal', 'assets/journal.png');
-    this.load.image('chatDoor', 'assets/chatDoor.png');
-    this.load.image('gameDoor', 'assets/gameDoor.png');
-    this.load.image('medDoor', 'assets/medDoor.png');
-    this.load.image('chatRoomButton', 'assets/chatRoomButton.png');
-    this.load.image('gameRoomButton', 'assets/gameRoomButton.png');
-    this.load.image('medRoomButton', 'assets/medRoomButton.png');
+    this.load.image('journal', 'assets/journal_big.png');
+    this.load.image('chatDoor', 'assets/doorLonely.png');
+    this.load.image('gameDoor', 'assets/doorHappy.png');
+    this.load.image('medDoor', 'assets/doorStressed.png');
+    this.load.image('chatRoomButton', 'assets/lonelybtn.png');
+    this.load.image('gameRoomButton', 'assets/happybtn.png');
+    this.load.image('medRoomButton', 'assets/stressedbtn.png');
+    this.load.image('miniJournal', 'assets/journal_tiny.png');
 
-    this.load.image('avatar1', 'assets/dino/rock.png');
-    this.load.image('avatar2', 'assets/dino/bush.png');
-    this.load.image('avatar3', 'assets/jessieFront.png');
-    this.load.image('avatar4', 'assets/jessieFront.png');
+    this.load.image('avatar1', 'assets/avatar1.png');
+    this.load.image('avatar2', 'assets/avatar2.png');
+    this.load.image('avatar3', 'assets/avatar3.png');
+    this.load.image('avatar4', 'assets/avatar4.png');
 
     this.load.audio('doorOpenSound', 'assets/doorOpen_2.ogg');
     this.load.audio('enterGameRoomSound', 'assets/dino/jingles_NES03.ogg');
   }
 
   create() {
-    this.add.image(400, 300, 'room');
+    this.add.image(650, 300, 'room');
 
     const x = 463;
     const y = 458;
     this.player = this.physics.add.sprite(x, y, this.avatar);
 
-    const gameDoor = this.physics.add.image(250, 100, 'gameDoor');
-    const chatDoor = this.physics.add.image(550, 100, 'chatDoor');
-    const medDoor = this.physics.add.image(700, 100, 'medDoor');
+    const gameDoor = this.physics.add.image(1100, 158, 'gameDoor');
+    const chatDoor = this.physics.add.image(950, 158, 'chatDoor');
+    const medDoor = this.physics.add.image(800, 158, 'medDoor');
 
     this.doorOpenSound = this.sound.add('doorOpenSound');
     this.enterGameRoomSound = this.sound.add('enterGameRoomSound');
@@ -80,9 +81,7 @@ export default class MainRoom extends Phaser.Scene {
     );
     this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
 
-    // star is a placeholder for the small journal that opens up on collision
-    // const star = this.physics.add.image(400, 250, "star");
-    const star = this.physics.add.image(700, 300, 'star');
+    const star = this.physics.add.image(110, 380, 'miniJournal');
     this.physics.add.collider(this.player, star, starTouched, null, this);
 
     const { Between } = Phaser.Math;
@@ -114,13 +113,13 @@ export default class MainRoom extends Phaser.Scene {
       });
 
       const chatRoomButton = this.add
-        .image(100, 450, 'chatRoomButton')
+        .image(150, 420, 'chatRoomButton')
         .setInteractive();
       const gameRoomButton = this.add
-        .image(400, 450, 'gameRoomButton')
+        .image(400, 420, 'gameRoomButton')
         .setInteractive();
       const medRoomButton = this.add
-        .image(700, 450, 'medRoomButton')
+        .image(650, 420, 'medRoomButton')
         .setInteractive();
 
       // TODO: in the button function, store the response in DB
@@ -157,12 +156,6 @@ export default class MainRoom extends Phaser.Scene {
         this
       );
     }
-
-    const journalText = this.add.text(150, 550, 'Walk over to the journal', {
-      fontSize: '32px',
-      fill: '#EE3D73', // font color
-      fontStyle: 'bold',
-    });
 
     this.player.setCollideWorldBounds(true);
   }

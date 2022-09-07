@@ -21,8 +21,8 @@ export default class GameRoom extends Phaser.Scene {
       'assets/dino/spritesheetalec.png',
       'assets/dino/spritesheetalec.json'
     );
-    this.load.image('exitButton', 'assets/back-button.png');
-    this.load.image('restartButton', 'assets/replay.png');
+    this.load.image('exitButton', 'assets/exitbutton.png');
+    this.load.image('restartButton', 'assets/back_replaybutton.png');
 
     this.load.image('rock', 'assets/dino/rock.png');
     this.load.image('bush', 'assets/dino/bush.png');
@@ -40,7 +40,8 @@ export default class GameRoom extends Phaser.Scene {
   create() {
     const div = document.getElementById('gameContainer');
     const sky = this.add.image(400, 300, 'sky').setInteractive();
-    const { height, width } = this.game.config;
+    const { width } = this.game.config;
+    const height = 600;
 
     this.runningSound = this.sound.add('runningSound', {
       volume: 0.25,
@@ -59,11 +60,11 @@ export default class GameRoom extends Phaser.Scene {
 
     this.respawnTime = 0;
 
-    this.cloudsWhite = this.add.tileSprite(400, 260, 800, 420, 'clouds-white');
+    this.cloudsWhite = this.add.tileSprite(670, 260, 1334, 420, 'clouds-white');
     this.cloudsWhiteSmall = this.add.tileSprite(
-      400,
+      670,
       260,
-      800,
+      1334,
       415,
       'clouds-white-small'
     );
@@ -108,13 +109,13 @@ export default class GameRoom extends Phaser.Scene {
     const exitButton = this.add
       .image(50, 50, 'exitButton')
       .setInteractive()
-      .setScale(0.5)
+      .setScale(.7)
       .setDepth(1);
 
     const restartButton = this.add
-      .image(130, 50, 'restartButton')
+      .image(120, 50, 'restartButton')
       .setInteractive()
-      .setScale(.5)
+      .setScale(.7)
       .setDepth(1);
 
     exitButton.on(
@@ -182,19 +183,19 @@ export default class GameRoom extends Phaser.Scene {
         }
       );
       const b = this.messageText.getBounds();
-      this.messageText.setPosition((800 - b.width) / 2, 300);
+      this.messageText.setPosition((1300 - b.width) / 2, 300);
     }
 
     if (0 < this.messageIndex < messages.length - 1) {
       this.messageText.setText(`You are ${messages[this.messageIndex]}`);
       const b = this.messageText.getBounds();
-      this.messageText.setPosition((800 - b.width) / 2, 300);
+      this.messageText.setPosition((1300 - b.width) / 2, 300);
     }
 
     if (this.messageIndex === 7) {
       this.messageText.setText('You can overcome any obstacle!');
       const b = this.messageText.getBounds();
-      this.messageText.setPosition((800 - b.width) / 2, 300);
+      this.messageText.setPosition((1300 - b.width) / 2, 300);
     }
 
     if (this.messageIndex < 7) {

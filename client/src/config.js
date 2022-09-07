@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
+  width: 1334,
   height: 600,
   pixelArt: true,
   transparent: true,
@@ -10,7 +10,6 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: true,
       enableBody: true,
     },
   },

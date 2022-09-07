@@ -20,11 +20,11 @@ export default class HomeRoom extends Phaser.Scene {
     // these put x and y at screen center:
     const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
     const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
-    const logo = this.add.image(screenCenterX, screenCenterY, 'logo').setDepth(1);
+    const logo = this.add.image(screenCenterX, screenCenterY, 'logo').setDepth(-1);
     
     // attempt at using relative spacing vs static x and y coordinates:
-    const enterButton = this.add.image(300, screenCenterY * 1.45, 'enter').setInteractive().setDepth(1);
-    const aboutButton = this.add.image(500, screenCenterY * 1.45, 'about').setInteractive().setDepth(1);
+    const enterButton = this.add.image(550, screenCenterY * 1.45, 'enter').setInteractive().setDepth(1);
+    const aboutButton = this.add.image(750, screenCenterY * 1.45, 'about').setInteractive().setDepth(1);
 
     // with static x and y coordinates:
     // const enterButton = this.add.image(300, 450, 'enter').setInteractive().setDepth(1);

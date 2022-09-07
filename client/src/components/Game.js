@@ -14,17 +14,9 @@ export default function Game() {
       <div
         className={styles.gameContainer}
         ref={gameContainer}
-        id='gameContainer'
-      >
-        <header></header>
-        <footer>
-          <button
-            className={styles.fullscreenButton}
-            onClick={() => toggleFullscreen()}
-          >
-            {isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-          </button>
-        </footer>
+        id='gameContainer'>
+        <header>
+        </header>
       </div>
     </div>
   );
