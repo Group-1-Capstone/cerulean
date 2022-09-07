@@ -41,7 +41,8 @@ export default class GameRoom extends Phaser.Scene {
   create() {
     const div = document.getElementById('gameContainer');
     const sky = this.add.image(400, 300, 'sky').setInteractive();
-    const { height, width } = this.game.config;
+    const { width } = this.game.config;
+    const height = 600;
 
     this.runningSound = this.sound.add('runningSound', {
       volume: 0.25,
@@ -60,9 +61,9 @@ export default class GameRoom extends Phaser.Scene {
 
     this.respawnTime = 0;
 
-    this.cloudsWhite = this.add.tileSprite(400, 260, 1334, 420, 'clouds-white');
+    this.cloudsWhite = this.add.tileSprite(670, 260, 1334, 420, 'clouds-white');
     this.cloudsWhiteSmall = this.add.tileSprite(
-      400,
+      670,
       260,
       1334,
       415,
