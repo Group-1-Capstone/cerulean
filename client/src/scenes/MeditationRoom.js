@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
 
 export default class MeditationRoom extends Phaser.Scene {
-  constructor(name, { store, socket }) {
+  constructor() {
     super({ key: 'MeditationRoom' });
-    // this.store = store,
   }
 
   init(data) {
@@ -35,7 +34,7 @@ export default class MeditationRoom extends Phaser.Scene {
 
     this.add.image(400, 300, 'medRoom');
 
-    this.exitSound = this.sound.add('exitSound');
+    this.exitSound = this.sound.add('exitSound', { volume: 0.25 });
 
     const music = this.sound.add('music');
     music.play();
@@ -70,6 +69,4 @@ export default class MeditationRoom extends Phaser.Scene {
       this
     );
   }
-
-  update() {}
 }

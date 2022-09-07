@@ -1,4 +1,4 @@
-# Cerulean
+<img src='https://github.com/Group-1-Capstone/cerulean/blob/main/public/assets/logo.png' />
 
 ## About
 
@@ -6,10 +6,10 @@ Cerulean is the engaging gaming app that fits your mood. By selecting how you fe
 
 ## Collaborators
 
-* Mary Anhalt: [LinkedIn](https://www.linkedin.com/in/mary-anhalt/)  [Github](https://github.com/MayKay1)
-* Daurie Basham: [LinkedIn](https://www.linkedin.com/in/daurieb/)  [Github](https://github.com/dcbasham)
-* Eve Holzgruber: [LinkedIn](https://www.linkedin.com/in/eveholzgruber/)  [Github](https://github.com/eholz)
-* Lisa Younes: [LinkedIn](https://www.linkedin.com/in/lisayounes/)  [Github](https://github.com/HelloLisaNYC)
+* Mary Anhalt: [LinkedIn](https://www.linkedin.com/in/mary-anhalt/) / [Github](https://github.com/MayKay1)
+* Daurie Basham: [LinkedIn](https://www.linkedin.com/in/daurieb/) / [Github](https://github.com/dcbasham)
+* Eve Holzgruber: [LinkedIn](https://www.linkedin.com/in/eveholzgruber/) / [Github](https://github.com/eholz)
+* Lisa Younes: [LinkedIn](https://www.linkedin.com/in/lisayounes/) / [Github](https://github.com/HelloLisaNYC)
 
 ## Get Started
 
@@ -21,12 +21,12 @@ npm run start:dev
 
 ## Heroku
 
-Experience on Heroku:
+Experience on Heroku: <a href='https://cerulean-main.herokuapp.com/'>Cerulean</a>
 
-<a href='https://cerulean-main.herokuapp.com/'>Cerulean on Heroku</a>
+## Special Thanks
 
-## Credits
-
-Music by:
-
-<a href='https://www.bensound.com'>Bensound</a>
+Graphics: Mary Anhalt
+Game Room Sprite: Daurie Basham
+Concept Creator: Eve Holzgruber
+Breathing Visual: Lisa Younes
+Music: <a href='https://www.bensound.com'>Bensound</a>
