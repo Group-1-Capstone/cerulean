@@ -2,9 +2,8 @@ import Phaser from 'phaser';
 import { io } from 'socket.io-client';
 
 export default class ChatRoom extends Phaser.Scene {
-  constructor(name, { store }) {
+  constructor() {
     super({ key: 'ChatRoom' });
-    // this.store = store,
     this.otherPlayers = {};
     this.speechBubbles = {};
     this.speechBubble = {};
@@ -140,7 +139,6 @@ export default class ChatRoom extends Phaser.Scene {
       this.moveBubble();
     }
 
-    //movement
     if (Math.abs(this.player.y - this.player.getData('newY')) <= 10) {
       this.player.y = this.player.getData('newY');
     } else if (this.player.y < this.player.getData('newY')) {
@@ -287,7 +285,6 @@ export default class ChatRoom extends Phaser.Scene {
     return { bubble, content };
   }
 
-  //destroy current bubble
   destroySpeechBubble(playerId) {
     const { player, bubble, content } = this.getSpeechBubble(playerId);
     player.setData('isTalking', false);

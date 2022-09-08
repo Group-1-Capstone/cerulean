@@ -95,7 +95,7 @@ export default class GameRoom extends Phaser.Scene {
         this.runningSound.pause();
         const gameOverText = this.add.text(300, 400, 'Game Over', {
           fontSize: '64px',
-          fill: '#EE3D73', //font color
+          fill: '#EE3D73',
         });
         const b = gameOverText.getBounds();
         gameOverText.setPosition((1300 - b.width) / 2, 400);
