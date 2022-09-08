@@ -1,4 +1,4 @@
-<img src='https://github.com/Group-1-Capstone/cerulean/blob/main/public/assets/logo.png' />
+<img src='https://github.com/Group-1-Capstone/cerulean/blob/main/public/assets/logotransparent.png' />
 
 ## About
 
@@ -25,8 +25,8 @@ Experience on Heroku: <a href='https://cerulean-main.herokuapp.com/'>Cerulean</a
 
 ## Special Thanks
 
-Graphics: Mary Anhalt
-Game Room Sprite: Daurie Basham
-Concept Creator: Eve Holzgruber
-Breathing Visual: Lisa Younes
-Music: <a href='https://www.bensound.com'>Bensound</a>
+* Graphics: Mary Anhalt
+* Game Room Sprite: Daurie Basham
+* Concept Creator: Eve Holzgruber
+* Breathing Visual: Lisa Younes
+* Music: <a href='https://www.bensound.com'>Bensound</a>

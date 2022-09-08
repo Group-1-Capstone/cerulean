@@ -47,7 +47,7 @@ export default class MeditationRoom extends Phaser.Scene {
     const startButton = this.add
       .image(650, 395, 'start')
       .setInteractive()
-      .setScale(0.7)
+      .setScale(0.1)
       .setDepth(2);
 
     exitButton.on(

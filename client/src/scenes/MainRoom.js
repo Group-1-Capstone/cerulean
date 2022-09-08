@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
 
 export default class MainRoom extends Phaser.Scene {
-  constructor(name, { store }) {
+  constructor() {
     super({ key: 'MainRoom' });
-    // this.store = store,
     this.isClicking = false;
   }
 
@@ -26,6 +25,8 @@ export default class MainRoom extends Phaser.Scene {
     this.load.image('gameRoomButton', 'assets/happybtn.png');
     this.load.image('medRoomButton', 'assets/stressedbtn.png');
     this.load.image('miniJournal', 'assets/journal_tiny.png');
+    this.load.image('musicOn', 'assets/music_on_blk.png');
+    this.load.image('musicOff', 'assets/music_off_blk.png');
 
     this.load.image('avatar1', 'assets/avatar1.png');
     this.load.image('avatar2', 'assets/avatar2.png');
@@ -34,6 +35,7 @@ export default class MainRoom extends Phaser.Scene {
 
     this.load.audio('doorOpenSound', 'assets/doorOpen_2.ogg');
     this.load.audio('enterGameRoomSound', 'assets/dino/jingles_NES03.ogg');
+    this.load.audio('themeMusic', 'assets/theme.mp3');
   }
 
   create() {
@@ -50,17 +52,31 @@ export default class MainRoom extends Phaser.Scene {
     this.doorOpenSound = this.sound.add('doorOpenSound');
     this.enterGameRoomSound = this.sound.add('enterGameRoomSound');
 
+    this.themeMusic = this.sound.add('themeMusic', {
+      volume: 0.25,
+      loop: true,
+    });
+    
+    this.musicOnButton = this.add.image(50, 50, 'musicOn').setScale(.5).setInteractive();
+    this.musicOnButton.visible = true;
+
+    this.musicOffButton = this.add.image(50, 50, 'musicOff').setScale(.5).setInteractive();
+    this.musicOffButton.visible = false;
+
     function gameDoorTouched() {
+      this.themeMusic.destroy();
       this.enterGameRoomSound.play();
       this.scene.start('GameRoom', { avatar: this.avatar });
     }
 
     function chatDoorTouched() {
+      this.themeMusic.destroy();
       this.doorOpenSound.play();
       this.scene.start('ChatRoom', { avatar: this.avatar });
     }
 
     function medDoorTouched() {
+      this.themeMusic.destroy();
       this.doorOpenSound.play();
       this.scene.start('MeditationRoom', { avatar: this.avatar });
     }
@@ -97,7 +113,6 @@ export default class MainRoom extends Phaser.Scene {
     });
 
     function starTouched(player, star) {
-      // disable glow
       star.glowTask = star.scene.tweens.add({
         targets: pipeline,
         intensity: 0.0,
@@ -109,7 +124,7 @@ export default class MainRoom extends Phaser.Scene {
       this.add.image(400, 300, 'journal');
       const promptText = this.add.text(200, 250, 'How are you feeling?', {
         fontSize: '32px',
-        fill: '#EE3D73', // font color
+        fill: '#EE3D73',
       });
 
       const chatRoomButton = this.add
@@ -122,13 +137,10 @@ export default class MainRoom extends Phaser.Scene {
         .image(650, 420, 'medRoomButton')
         .setInteractive();
 
-      // TODO: in the button function, store the response in DB
-      // if we wanted only the one door to appear after clicking button and player enters on their own:
-      // see commented code under medRoomButton
-
       chatRoomButton.on(
         'pointerup',
         function () {
+          this.themeMusic.destroy();
           this.doorOpenSound.play();
           this.scene.start('ChatRoom', { avatar: this.avatar });
         },
@@ -138,6 +150,7 @@ export default class MainRoom extends Phaser.Scene {
       gameRoomButton.on(
         'pointerup',
         () => {
+          this.themeMusic.destroy();
           this.enterGameRoomSound.play();
           this.scene.start('GameRoom', { avatar: this.avatar });
         },
@@ -147,17 +160,35 @@ export default class MainRoom extends Phaser.Scene {
       medRoomButton.on(
         'pointerup',
         function () {
+          this.themeMusic.destroy();
           this.doorOpenSound.play();
           this.scene.start('MeditationRoom', { avatar: this.avatar });
-          // if we wanted the door to appear after clicking button and player enters on their own:
-          // const medDoor = this.physics.add.image(700, 100, "medDoor");
-          // this.physics.add.collider(this.player, medDoor, medDoorTouched, null, this);
         },
         this
       );
     }
 
     this.player.setCollideWorldBounds(true);
+
+    this.musicOnButton.on(
+      'pointerup', 
+      () => {
+        this.themeMusic.play();
+        this.musicOffButton.visible = true;
+        this.musicOnButton.visible = false;
+      },
+      this
+    );
+
+    this.musicOffButton.on(
+      'pointerup', 
+      () => {
+        this.themeMusic.stop();
+        this.musicOnButton.visible = true;
+        this.musicOffButton.visible = false;
+      },
+      this
+    );
   }
 
   update() {
